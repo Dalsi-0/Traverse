@@ -1,18 +1,20 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody rb;
     private Animator animator;
 
-    public float acceleration = 5f;   
-    public float deceleration = 5f;   
-    public float maxSpeed = 6f;       
+    public float acceleration = 5f;
+    public float deceleration = 5f;
+    public float maxSpeed = 6f;
     private Vector3 moveDirection;
     private Vector3 currentVelocity = Vector3.zero;
 
     public float jumpForce = 7f;
     private bool isGrounded;
+    private bool isFalling;
 
     void Start()
     {
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+        HandleFalling(); 
     }
 
     void Move()
@@ -35,18 +38,25 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
-        moveDirection = new Vector3(moveX, 0, moveZ).normalized;
+        // 입력 벡터
+        Vector3 inputDirection = new Vector3(moveX, 0, moveZ).normalized;
 
-        if (moveDirection.magnitude > 0)
+        if (inputDirection.magnitude > 0)
         {
-            transform.rotation = Quaternion.LookRotation(moveDirection);
+            Vector3 cameraForward = Camera.main.transform.forward;
+            Vector3 cameraRight = Camera.main.transform.right;
+            cameraForward.y = 0f; 
+            cameraRight.y = 0f;
 
-            // 가속
+            moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
+
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f); // 10f는 회전 속도 조절값
+
             currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
         }
         else
         {
-            // 감속 
             currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
         }
 
@@ -61,10 +71,41 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
             animator.SetTrigger("Jump");
-            isGrounded = false;
-            animator.SetBool("isGrounded", false);
+
+            StartCoroutine(PerformJump());
+        }
+    }
+
+    IEnumerator PerformJump()
+    {
+        yield return new WaitForSeconds(0.3f); // 애니메이션 준비 동작 대기
+
+        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+        isGrounded = false;
+        animator.SetBool("isGrounded", false);  
+
+        isFalling = false; 
+        animator.SetBool("isFalling", false);
+    }
+
+    private void HandleFalling()
+    {
+        if (!isGrounded && rb.velocity.y < 0)
+        {
+            if (!isFalling)
+            {
+                isFalling = true;
+                animator.SetBool("isFalling", true);
+            }
+        }
+        else
+        {
+            if (isFalling)
+            {
+                isFalling = false;
+                animator.SetBool("isFalling", false);
+            }
         }
     }
 
@@ -72,8 +113,17 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            isGrounded = true; 
             animator.SetBool("isGrounded", true);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false; 
+            animator.SetBool("isGrounded", false);
         }
     }
 }
