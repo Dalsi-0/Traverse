@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        HandleFalling(); 
+        HandleFalling();
     }
 
     void Move()
@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 cameraForward = Camera.main.transform.forward;
             Vector3 cameraRight = Camera.main.transform.right;
-            cameraForward.y = 0f; 
+            cameraForward.y = 0f;
             cameraRight.y = 0f;
 
             moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
@@ -83,9 +83,9 @@ public class PlayerController : MonoBehaviour
 
         rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
         isGrounded = false;
-        animator.SetBool("isGrounded", false);  
+        animator.SetBool("isGrounded", false);
 
-        isFalling = false; 
+        isFalling = false;
         animator.SetBool("isFalling", false);
     }
 
@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true; 
+            isGrounded = true;
             animator.SetBool("isGrounded", true);
         }
     }
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false; 
+            isGrounded = false;
             animator.SetBool("isGrounded", false);
         }
     }
