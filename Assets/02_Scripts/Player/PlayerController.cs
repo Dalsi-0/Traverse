@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,7 +11,6 @@ public class PlayerController : MonoBehaviour
     public float acceleration = 5f;
     public float deceleration = 5f;
     public float maxSpeed = 6f;
-    private Vector3 moveDirection;
     private Vector3 currentVelocity = Vector3.zero;
 
     public float jumpForce = 7f;
@@ -24,34 +25,65 @@ public class PlayerController : MonoBehaviour
     private bool isBowEquipped = false; // 활 장착 상태 변수
     private bool isCharging = false;    // 활 차징 상태 변수
 
+    private Vector2 targetDir;
+    private Vector2 smoothDir; // 부드러운 이동을 위한 변수
+    private float smoothTime = 0.1f; // 부드럽게 변환되는 시간
 
     // animation IDs
     private int animIDSpeed;
     private int animIDGrounded;
     private int animIDJump;
-    private int animIDFreeFall;
-    private int animIDMotionSpeed;
+    private int animIDMoveX;
+    private int animIDMoveZ;
+    private int animIDIsFalling;
+    private int animIDDrawBow;
+    private int animIDReleaseBow;
+    private int animIDEquipBow;
+    private int animIDUnequipBow;
+
+    public PlayerInput playerInput; // PlayerInput 스크립트를 참조
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
-
+        playerInput = GetComponent<PlayerInput>();
 
         jumpTimeoutDelta = jumpTimeout;
         fallTimeoutDelta = fallTimeout;
-        animIDSpeed = Animator.StringToHash("Speed");
-        animIDGrounded = Animator.StringToHash("Grounded");
+        animIDSpeed = Animator.StringToHash("speed");
+        animIDGrounded = Animator.StringToHash("isGrounded");
         animIDJump = Animator.StringToHash("Jump");
-        animIDFreeFall = Animator.StringToHash("FreeFall");
-        animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+        animIDMoveX = Animator.StringToHash("moveX");
+        animIDMoveZ = Animator.StringToHash("moveZ");
+        animIDIsFalling = Animator.StringToHash("isFalling");
+        animIDDrawBow = Animator.StringToHash("DrawBow");
+        animIDReleaseBow = Animator.StringToHash("ReleaseBow");
+        animIDEquipBow = Animator.StringToHash("EquipBow");
+        animIDUnequipBow = Animator.StringToHash("UnequipBow");
+
+    }
+    private void OnEnable()
+    {
+        playerInput.jumpEvent += HandleJump;
+        playerInput.leftClickStartedEvent += StartCharging;
+        playerInput.leftClickCanceledEvent += StopCharging;
+        playerInput.rightClickStartedEvent += EquipBow;
+        playerInput.rightClickCanceledEvent += UnequipBow;
+    }
+
+    private void OnDisable()
+    {
+        playerInput.jumpEvent -= HandleJump;
+        playerInput.rightClickStartedEvent -= EquipBow;
+        playerInput.rightClickCanceledEvent -= UnequipBow;
+        playerInput.leftClickStartedEvent -= StartCharging;
+        playerInput.leftClickCanceledEvent -= StopCharging;
     }
 
     void Update()
     {
-        HandleJump();
-        HandleBowEquip(); // 활 장착 처리
-        HandleBowCharge(); // 활 차징 처리
+        HandleTimeout();
     }
 
     private void FixedUpdate()
@@ -62,59 +94,67 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        float moveX = Input.GetAxis("Horizontal");  // 좌우 이동
-        float moveZ = Input.GetAxis("Vertical");    // 앞뒤 이동
+        targetDir = playerInput.GetMoveDirection(); // moveAction에 할당된 값
 
-        Vector3 inputDirection = new Vector3(moveX, 0, moveZ).normalized;
+        if (targetDir != Vector2.zero)
+        {
+            // 부드럽게 이동 방향을 변화시킴
+            smoothDir = Vector2.Lerp(smoothDir, targetDir, smoothTime); // Lerp로 부드럽게 전환
+        }
+        else
+        {
+            smoothDir = targetDir;
+        }
+
+        // 이동 방향 처리
+        float moveX = smoothDir.x * 1f;  // 이동 입력값
+        float moveZ = smoothDir.y * 1f;  // 이동 입력값
+        
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
 
         if (isBowEquipped)  // 활 장착 상태일 때
         {
-            if (inputDirection.magnitude > 0)
+            Vector3 moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
+
+            if (moveDirection.magnitude > 0)
             {
-                Vector3 cameraForward = Camera.main.transform.forward;
-                Vector3 cameraRight = Camera.main.transform.right;
-
-                cameraForward.y = 0f;
-                cameraRight.y = 0f;
-
-                moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
-
-                // 카메라 정면을 바라보도록 회전
+                // 캐릭터가 카메라 정면을 바라보도록 회전
                 Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
 
                 // 활 차징 상태라면 속도를 추가 감소
-                float speedModifier = isCharging ? 0.3f : 0.5f;
+                float speedModifier = isCharging ? 0.2f : 0.3f;
                 currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
             }
             else
             {
+                // 입력이 없을 때도 캐릭터를 카메라 정면으로 회전
+                Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+
                 currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
             }
 
             rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
 
             float speedRatio = currentVelocity.magnitude / (maxSpeed * (isCharging ? 0.3f : 0.5f));
-            animator.SetFloat("speed", Mathf.Clamp(speedRatio, 0f, 1f));
+            animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
 
-            animator.SetFloat("moveX", moveX);
-            animator.SetFloat("moveZ", moveZ);
+            animator.SetFloat(animIDMoveX, moveX);
+            animator.SetFloat(animIDMoveZ, moveZ);
         }
-        else  // 활을 장착하지 않았을 때는 기본 이동
+        else  // 활을 장착하지 않았을 때는 기존 방식
         {
-            if (inputDirection.magnitude > 0)
+            Vector3 moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
+
+            if (moveDirection.magnitude > 0)
             {
-                Vector3 cameraForward = Camera.main.transform.forward;
-                Vector3 cameraRight = Camera.main.transform.right;
-
-                cameraForward.y = 0f;
-                cameraRight.y = 0f;
-
-                moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
-
                 Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-
                 currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
             }
             else
@@ -123,57 +163,62 @@ public class PlayerController : MonoBehaviour
             }
 
             rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
-
             float speedRatio = currentVelocity.magnitude / maxSpeed;
-            animator.SetFloat("speed", Mathf.Clamp(speedRatio, 0f, 1f));
+            animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
         }
     }
 
-    void HandleJump()
+    void HandleTimeout()
     {
         if (jumpTimeoutDelta > 0)
         {
             jumpTimeoutDelta -= Time.deltaTime;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && jumpTimeoutDelta <= 0.0f)
+        if (fallTimeoutDelta >= 0.0f)
         {
-            animator.SetTrigger("Jump");
+            fallTimeoutDelta -= Time.deltaTime;
+        }
+    }
+
+    void HandleJump()
+    {
+        if (isGrounded && jumpTimeoutDelta <= 0.0f)
+        {
+            animator.SetTrigger(animIDJump);
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
             isGrounded = false;
-            animator.SetBool("isGrounded", false);
+            animator.SetBool(animIDGrounded, false);
 
             isFalling = false;
-            animator.SetBool("isFalling", false);
+            animator.SetBool(animIDIsFalling, false);
 
             // 점프하면 활 장착 해제
             if (isBowEquipped)
             {
-                UnequipBow();
+                isBowEquipped = false;
+                isCharging = false; // 차징 상태 해제
             }
         }
     }
 
     private void HandleFalling()
     {
-        if (fallTimeoutDelta >= 0.0f)
-        {
-            fallTimeoutDelta -= Time.deltaTime;
-        }
-
         if (!isGrounded && rb.velocity.y < 0 && jumpTimeoutDelta < 0.0f)
         {
             jumpTimeoutDelta = jumpTimeout;
             if (!isFalling)
             {
                 isFalling = true;
-                animator.SetBool("isFalling", true);
+                animator.SetBool(animIDIsFalling, true);
             }
 
             // 낙하 시 활 장착 해제
             if (isBowEquipped)
             {
-                UnequipBow();
+                isBowEquipped = false;
+                isCharging = false; // 차징 상태 해제
+                animator.ResetTrigger(animIDUnequipBow); // 트리거 강제 해제
             }
         }
         else
@@ -182,36 +227,7 @@ public class PlayerController : MonoBehaviour
             if (isFalling)
             {
                 isFalling = false;
-                animator.SetBool("isFalling", false);
-            }
-        }
-    }
-
-    private void HandleBowEquip()
-    {
-        if (Input.GetMouseButtonDown(1)) // 우클릭 시 활 장착
-        {
-            EquipBow();
-        }
-        else if (Input.GetMouseButtonUp(1)) // 우클릭 해제 시 활 해제
-        {
-            UnequipBow();
-        }
-    }
-
-    private void HandleBowCharge()
-    {
-        if (isBowEquipped)
-        {
-            if (Input.GetMouseButtonDown(0)) // 좌클릭 시작 시 활 드로우 애니메이션 실행
-            {
-                isCharging = true;
-                animator.SetTrigger("DrawBow");
-            }
-            else if (Input.GetMouseButtonUp(0)) // 좌클릭 해제 시 차징 해제
-            {
-                isCharging = false;
-                animator.SetTrigger("ReleaseBow");
+                animator.SetBool(animIDIsFalling, false);
             }
         }
     }
@@ -221,27 +237,52 @@ public class PlayerController : MonoBehaviour
         if (!isBowEquipped)
         {
             isBowEquipped = true;
-            animator.SetTrigger("EquipBow");
+            animator.SetTrigger(animIDEquipBow);
         }
     }
 
-    private void UnequipBow()   
+    // 활 해제
+    private void UnequipBow()
     {
         if (isBowEquipped)
         {
+            // 활 차징 상태라면 반드시 활 발사 애니메이션을 실행하여 자연스럽게 종료
+            if (isCharging)
+            {
+                isCharging = false;
+                animator.SetTrigger(animIDReleaseBow);
+            }
+
             isBowEquipped = false;
-            isCharging = false; // 차징 상태 해제
-            animator.SetTrigger("UnequipBow");
-            animator.ResetTrigger("UnequipBow"); // 트리거 강제 해제
+            animator.SetTrigger(animIDUnequipBow);
         }
     }
 
+    // 활 차징 (좌클릭 시작)
+    private void StartCharging()
+    {
+        if (isBowEquipped)
+        {
+            isCharging = true;
+            animator.SetTrigger(animIDDrawBow);
+        }
+    }
+
+    // 활 발사 (좌클릭 해제)
+    private void StopCharging()
+    {
+        if (isBowEquipped)
+        {
+            isCharging = false;
+            animator.SetTrigger(animIDReleaseBow);
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            animator.SetBool("isGrounded", true);
+            animator.SetBool(animIDGrounded, true);
         }
     }
 
@@ -250,7 +291,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
-            animator.SetBool("isGrounded", false);
+            animator.SetBool(animIDGrounded, false);
         }
     }
 }
