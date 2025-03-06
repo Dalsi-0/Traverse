@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7f519b87fd6e43641abb00fa58fbbe91
+guid: e7105b16b4794c4499a7c920e08ba54d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -17,7 +17,14 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: 
+    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
+      copied configuration does not match position in animation file:\n\t'mixamorig:LeftUpLeg'
+      : position error = 17.353079 mm\n\t'mixamorig:LeftLeg' : position error = 36.349354
+      mm\n\t'mixamorig:LeftFoot' : position error = 23.722477 mm\n\t'mixamorig:LeftToeBase'
+      : position error = 19.385939 mm\n\t'mixamorig:RightUpLeg' : position error
+      = 17.391642 mm\n\t'mixamorig:RightLeg' : position error = 36.519474 mm\n\t'mixamorig:RightFoot'
+      : position error = 23.530304 mm\n\t'mixamorig:RightToeBase' : position error
+      = 19.414888 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -31,7 +38,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Standing Aim Walk Back
+      takeName: mixamo.com
+      internalID: -203655887218126122
+      firstFrame: 0
+      lastFrame: 44
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []

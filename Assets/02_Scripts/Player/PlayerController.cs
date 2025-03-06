@@ -16,15 +16,42 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool isFalling;
 
+    public float jumpTimeout = 1f;
+    private float jumpTimeoutDelta = 0f;
+    public float fallTimeout = 1f;
+    private float fallTimeoutDelta = 0f;
+
+    private bool isBowEquipped = false; // 활 장착 상태 변수
+    private bool isCharging = false;    // 활 차징 상태 변수
+
+
+    // animation IDs
+    private int animIDSpeed;
+    private int animIDGrounded;
+    private int animIDJump;
+    private int animIDFreeFall;
+    private int animIDMotionSpeed;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+
+
+        jumpTimeoutDelta = jumpTimeout;
+        fallTimeoutDelta = fallTimeout;
+        animIDSpeed = Animator.StringToHash("Speed");
+        animIDGrounded = Animator.StringToHash("Grounded");
+        animIDJump = Animator.StringToHash("Jump");
+        animIDFreeFall = Animator.StringToHash("FreeFall");
+        animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
     }
 
     void Update()
     {
         HandleJump();
+        HandleBowEquip(); // 활 장착 처리
+        HandleBowCharge(); // 활 차징 처리
     }
 
     private void FixedUpdate()
@@ -35,77 +62,177 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxis("Horizontal");  // 좌우 이동
+        float moveZ = Input.GetAxis("Vertical");    // 앞뒤 이동
 
-        // 입력 벡터
         Vector3 inputDirection = new Vector3(moveX, 0, moveZ).normalized;
 
-        if (inputDirection.magnitude > 0)
+        if (isBowEquipped)  // 활 장착 상태일 때
         {
-            Vector3 cameraForward = Camera.main.transform.forward;
-            Vector3 cameraRight = Camera.main.transform.right;
-            cameraForward.y = 0f;
-            cameraRight.y = 0f;
+            if (inputDirection.magnitude > 0)
+            {
+                Vector3 cameraForward = Camera.main.transform.forward;
+                Vector3 cameraRight = Camera.main.transform.right;
 
-            moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
+                cameraForward.y = 0f;
+                cameraRight.y = 0f;
 
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f); // 10f는 회전 속도 조절값
+                moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
 
-            currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
+                // 카메라 정면을 바라보도록 회전
+                Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+
+                // 활 차징 상태라면 속도를 추가 감소
+                float speedModifier = isCharging ? 0.3f : 0.5f;
+                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
+            }
+            else
+            {
+                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            }
+
+            rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
+
+            float speedRatio = currentVelocity.magnitude / (maxSpeed * (isCharging ? 0.3f : 0.5f));
+            animator.SetFloat("speed", Mathf.Clamp(speedRatio, 0f, 1f));
+
+            animator.SetFloat("moveX", moveX);
+            animator.SetFloat("moveZ", moveZ);
         }
-        else
+        else  // 활을 장착하지 않았을 때는 기본 이동
         {
-            currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            if (inputDirection.magnitude > 0)
+            {
+                Vector3 cameraForward = Camera.main.transform.forward;
+                Vector3 cameraRight = Camera.main.transform.right;
+
+                cameraForward.y = 0f;
+                cameraRight.y = 0f;
+
+                moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
+
+                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+
+                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
+            }
+            else
+            {
+                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            }
+
+            rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
+
+            float speedRatio = currentVelocity.magnitude / maxSpeed;
+            animator.SetFloat("speed", Mathf.Clamp(speedRatio, 0f, 1f));
         }
-
-        rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
-
-        // 현재 속도 비율에 따라 애니메이션 속도 조절
-        float speedRatio = currentVelocity.magnitude / maxSpeed;
-        animator.SetFloat("speed", Mathf.Clamp(speedRatio, 0f, 1f));
     }
 
     void HandleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (jumpTimeoutDelta > 0)
+        {
+            jumpTimeoutDelta -= Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && jumpTimeoutDelta <= 0.0f)
         {
             animator.SetTrigger("Jump");
+            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+            isGrounded = false;
+            animator.SetBool("isGrounded", false);
 
-            StartCoroutine(PerformJump());
+            isFalling = false;
+            animator.SetBool("isFalling", false);
+
+            // 점프하면 활 장착 해제
+            if (isBowEquipped)
+            {
+                UnequipBow();
+            }
         }
-    }
-
-    IEnumerator PerformJump()
-    {
-        yield return new WaitForSeconds(0.3f); // 애니메이션 준비 동작 대기
-
-        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-        isGrounded = false;
-        animator.SetBool("isGrounded", false);
-
-        isFalling = false;
-        animator.SetBool("isFalling", false);
     }
 
     private void HandleFalling()
     {
-        if (!isGrounded && rb.velocity.y < 0)
+        if (fallTimeoutDelta >= 0.0f)
         {
+            fallTimeoutDelta -= Time.deltaTime;
+        }
+
+        if (!isGrounded && rb.velocity.y < 0 && jumpTimeoutDelta < 0.0f)
+        {
+            jumpTimeoutDelta = jumpTimeout;
             if (!isFalling)
             {
                 isFalling = true;
                 animator.SetBool("isFalling", true);
             }
+
+            // 낙하 시 활 장착 해제
+            if (isBowEquipped)
+            {
+                UnequipBow();
+            }
         }
         else
         {
+            fallTimeoutDelta = fallTimeout;
             if (isFalling)
             {
                 isFalling = false;
                 animator.SetBool("isFalling", false);
             }
+        }
+    }
+
+    private void HandleBowEquip()
+    {
+        if (Input.GetMouseButtonDown(1)) // 우클릭 시 활 장착
+        {
+            EquipBow();
+        }
+        else if (Input.GetMouseButtonUp(1)) // 우클릭 해제 시 활 해제
+        {
+            UnequipBow();
+        }
+    }
+
+    private void HandleBowCharge()
+    {
+        if (isBowEquipped)
+        {
+            if (Input.GetMouseButtonDown(0)) // 좌클릭 시작 시 활 드로우 애니메이션 실행
+            {
+                isCharging = true;
+                animator.SetTrigger("DrawBow");
+            }
+            else if (Input.GetMouseButtonUp(0)) // 좌클릭 해제 시 차징 해제
+            {
+                isCharging = false;
+                animator.SetTrigger("ReleaseBow");
+            }
+        }
+    }
+
+    private void EquipBow()
+    {
+        if (!isBowEquipped)
+        {
+            isBowEquipped = true;
+            animator.SetTrigger("EquipBow");
+        }
+    }
+
+    private void UnequipBow()   
+    {
+        if (isBowEquipped)
+        {
+            isBowEquipped = false;
+            isCharging = false; // 차징 상태 해제
+            animator.SetTrigger("UnequipBow");
+            animator.ResetTrigger("UnequipBow"); // 트리거 강제 해제
         }
     }
 

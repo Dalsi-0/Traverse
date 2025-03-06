@@ -923,9 +923,9 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 472956684}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 87343365083f0094c822b49da8f3fe00, type: 3}
   m_Controller: {fileID: 9100000, guid: 2bf15847435fc804c9a958652351a267, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -1072,7 +1072,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873664254}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.024182053, y: 0.968975, z: 0.22222725, w: -0.10544073}
+  m_LocalRotation: {x: 0.024182053, y: 0.968975, z: 0.22222726, w: -0.10544073}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1280,9 +1280,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: 10
-  deceleration: 7
+  deceleration: 10
   maxSpeed: 6
   jumpForce: 7
+  jumpTimeout: 0.5
+  fallTimeout: 0.25
 --- !u!4 &1046401400
 Transform:
   m_ObjectHideFlags: 0
