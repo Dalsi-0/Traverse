@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
     private void UpdateStaminaUI()
     {
         GetUIReferences().StaminaBarObject.SetActive(PlayerManager.Instance.GetPlayerReferences().Player.stamina
-            < PlayerManager.Instance.GetPlayerReferences().Player.maxStamina); // �ִ�ġ�� �ƴϸ� Ȱ��ȭ
+            < PlayerManager.Instance.GetPlayerReferences().Player.maxStamina); // 최대치가 아니면 활성화
 
         GetUIReferences().StaminaBarImage.fillAmount = PlayerManager.Instance.GetPlayerReferences().Player.stamina
             / PlayerManager.Instance.GetPlayerReferences().Player.maxStamina;

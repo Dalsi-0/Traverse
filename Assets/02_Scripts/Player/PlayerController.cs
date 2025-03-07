@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using static UnityEngine.Rendering.DebugUI;
@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private float deceleration = 5f;
     private float maxSpeed = 6f;
     private float jumpForce = 7f;
+    private float staminaDrainRate = 10f;
 
     private Vector3 currentVelocity = Vector3.zero;
 
@@ -23,12 +24,12 @@ public class PlayerController : MonoBehaviour
     private float fallTimeout = 1f;
     private float fallTimeoutDelta = 0f;
 
-    private bool isBowEquipped = false; // »∞ ¿Â¬¯ ªÛ≈¬ ∫Øºˆ
-    private bool isCharging = false;    // »∞ ¬˜¬° ªÛ≈¬ ∫Øºˆ
+    private bool isBowEquipped = false; // Ìôú Ïû•Ï∞© ÏÉÅÌÉú Î≥ÄÏàò
+    private bool isCharging = false;    // Ìôú Ï∞®Ïßï ÏÉÅÌÉú Î≥ÄÏàò
 
     private Vector2 targetDir;
-    private Vector2 smoothDir; // ∫ŒµÂ∑ØøÓ ¿Ãµø¿ª ¿ß«— ∫Øºˆ
-    private float smoothTime = 0.1f; // ∫ŒµÂ∑¥∞‘ ∫Ø»Øµ«¥¬ Ω√∞£
+    private Vector2 smoothDir; // Î∂ÄÎìúÎü¨Ïö¥ Ïù¥ÎèôÏùÑ ÏúÑÌïú Î≥ÄÏàò
+    private float smoothTime = 0.1f; // Î∂ÄÎìúÎüΩÍ≤å Î≥ÄÌôòÎêòÎäî ÏãúÍ∞Ñ
 
     // animation IDs
     private int animIDSpeed;
@@ -42,8 +43,8 @@ public class PlayerController : MonoBehaviour
     private int animIDEquipBow;
     private int animIDUnequipBow;
 
-    private PlayerInput playerInput; // PlayerInput Ω∫≈©∏≥∆Æ∏¶ ¬¸¡∂
-    private Player player; // PlayerInput Ω∫≈©∏≥∆Æ∏¶ ¬¸¡∂
+    private PlayerInput playerInput; // PlayerInput Ïä§ÌÅ¨Î¶ΩÌä∏Î•º Ï∞∏Ï°∞
+    private Player player; // PlayerInput Ïä§ÌÅ¨Î¶ΩÌä∏Î•º Ï∞∏Ï°∞
 
     private void Awake()
     {
@@ -66,6 +67,7 @@ public class PlayerController : MonoBehaviour
         animIDUnequipBow = Animator.StringToHash("UnequipBow");
 
     }
+
     private void OnEnable()
     {
         playerInput.jumpEvent += HandleJump;
@@ -87,6 +89,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleTimeout();
+        HandleChargingState();
     }
 
     private void FixedUpdate()
@@ -97,21 +100,21 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        targetDir = playerInput.GetMoveDirection(); // moveActionø° «“¥Áµ» ∞™
+        targetDir = playerInput.GetMoveDirection(); // moveActionÏóê Ìï†ÎãπÎêú Í∞í
 
         if (targetDir != Vector2.zero)
         {
-            // ∫ŒµÂ∑¥∞‘ ¿Ãµø πÊ«‚¿ª ∫Ø»≠Ω√≈¥
-            smoothDir = Vector2.Lerp(smoothDir, targetDir, smoothTime); // Lerp∑Œ ∫ŒµÂ∑¥∞‘ ¿¸»Ø
+            // Î∂ÄÎìúÎüΩÍ≤å Ïù¥Îèô Î∞©Ìñ•ÏùÑ Î≥ÄÌôîÏãúÌÇ¥
+            smoothDir = Vector2.Lerp(smoothDir, targetDir, smoothTime); // LerpÎ°ú Î∂ÄÎìúÎüΩÍ≤å Ï†ÑÌôò
         }
         else
         {
             smoothDir = targetDir;
         }
 
-        // ¿Ãµø πÊ«‚ √≥∏Æ
-        float moveX = smoothDir.x * 1f;  // ¿Ãµø ¿‘∑¬∞™
-        float moveZ = smoothDir.y * 1f;  // ¿Ãµø ¿‘∑¬∞™
+        // Ïù¥Îèô Î∞©Ìñ• Ï≤òÎ¶¨
+        float moveX = smoothDir.x * 1f;  // Ïù¥Îèô ÏûÖÎ†•Í∞í
+        float moveZ = smoothDir.y * 1f;  // Ïù¥Îèô ÏûÖÎ†•Í∞í
         
         Vector3 cameraForward = Camera.main.transform.forward;
         Vector3 cameraRight = Camera.main.transform.right;
@@ -119,23 +122,23 @@ public class PlayerController : MonoBehaviour
         cameraForward.y = 0f;
         cameraRight.y = 0f;
 
-        if (isBowEquipped)  // »∞ ¿Â¬¯ ªÛ≈¬¿œ ∂ß
+        if (isBowEquipped)  // Ìôú Ïû•Ï∞© ÏÉÅÌÉúÏùº Îïå
         {
             Vector3 moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
 
             if (moveDirection.magnitude > 0)
             {
-                // ƒ≥∏Ø≈Õ∞° ƒ´∏ﬁ∂Û ¡§∏È¿ª πŸ∂Û∫∏µµ∑œ »∏¿¸
+                // Ï∫êÎ¶≠ÌÑ∞Í∞Ä Ïπ¥Î©îÎùº Ï†ïÎ©¥ÏùÑ Î∞îÎùºÎ≥¥ÎèÑÎ°ù ÌöåÏ†Ñ
                 Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
 
-                // »∞ ¬˜¬° ªÛ≈¬∂Û∏È º”µµ∏¶ √ﬂ∞° ∞®º“
+                // Ìôú Ï∞®Ïßï ÏÉÅÌÉúÎùºÎ©¥ ÏÜçÎèÑÎ•º Ï∂îÍ∞Ä Í∞êÏÜå
                 float speedModifier = isCharging ? 0.2f : 0.3f;
                 currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
             }
             else
             {
-                // ¿‘∑¬¿Ã æ¯¿ª ∂ßµµ ƒ≥∏Ø≈Õ∏¶ ƒ´∏ﬁ∂Û ¡§∏È¿∏∑Œ »∏¿¸
+                // ÏûÖÎ†•Ïù¥ ÏóÜÏùÑ ÎïåÎèÑ Ï∫êÎ¶≠ÌÑ∞Î•º Ïπ¥Î©îÎùº Ï†ïÎ©¥ÏúºÎ°ú ÌöåÏ†Ñ
                 Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
 
@@ -150,7 +153,7 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat(animIDMoveX, moveX);
             animator.SetFloat(animIDMoveZ, moveZ);
         }
-        else  // »∞¿ª ¿Â¬¯«œ¡ˆ æ æ“¿ª ∂ß¥¬ ±‚¡∏ πÊΩƒ
+        else  // ÌôúÏùÑ Ïû•Ï∞©ÌïòÏßÄ ÏïäÏïòÏùÑ ÎïåÎäî Í∏∞Ï°¥ Î∞©Ïãù
         {
             Vector3 moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
 
@@ -168,6 +171,34 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
             float speedRatio = currentVelocity.magnitude / maxSpeed;
             animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
+        }
+    }
+
+    private void HandleChargingState()
+    {
+        if (isCharging)  // Ìôú Ï∞®Ïßï Ï§ëÏùº Îïå
+        {
+            if (player.stamina > 0)
+            {
+                DrainStamina();
+            }
+            else
+            {
+                StopCharging();
+            }
+        }
+    }
+
+    private void DrainStamina()
+    {
+        // Ïä§ÌÉúÎØ∏ÎÇòÍ∞Ä ÏÜåÎ™®ÎêòÎèÑÎ°ù Ï≤òÎ¶¨
+        if (player.ConsumeStamina(staminaDrainRate * Time.deltaTime))
+        {
+        }
+        else
+        {
+            // Ïä§ÌÉúÎØ∏ÎÇòÍ∞Ä Î∂ÄÏ°±ÌïòÎ©¥ Ï∞®ÏßïÏùÑ Ï∑®ÏÜå
+            StopCharging();
         }
     }
 
@@ -196,11 +227,10 @@ public class PlayerController : MonoBehaviour
             isFalling = false;
             animator.SetBool(animIDIsFalling, false);
 
-            // ¡°«¡«œ∏È »∞ ¿Â¬¯ «ÿ¡¶
             if (isBowEquipped)
             {
                 isBowEquipped = false;
-                isCharging = false; // ¬˜¬° ªÛ≈¬ «ÿ¡¶
+                isCharging = false; 
             }
         }
     }
@@ -216,12 +246,11 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool(animIDIsFalling, true);
             }
 
-            // ≥´«œ Ω√ »∞ ¿Â¬¯ «ÿ¡¶
             if (isBowEquipped)
             {
                 isBowEquipped = false;
-                isCharging = false; // ¬˜¬° ªÛ≈¬ «ÿ¡¶
-                animator.ResetTrigger(animIDUnequipBow); // ∆Æ∏Æ∞≈ ∞≠¡¶ «ÿ¡¶
+                isCharging = false; 
+                animator.ResetTrigger(animIDUnequipBow); // Ìä∏Î¶¨Í±∞ Í∞ïÏ†ú Ìï¥Ï†ú
             }
         }
         else
@@ -244,12 +273,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // »∞ «ÿ¡¶
+    // Ìôú Ìï¥Ï†ú
     private void UnequipBow()
     {
         if (isBowEquipped)
         {
-            // »∞ ¬˜¬° ªÛ≈¬∂Û∏È π›µÂΩ√ »∞ πﬂªÁ æ÷¥œ∏ﬁ¿Ãº«¿ª Ω««‡«œø© ¿⁄ø¨Ω∫∑¥∞‘ ¡æ∑·
             if (isCharging)
             {
                 isCharging = false;
@@ -261,25 +289,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // »∞ ¬˜¬° (¡¬≈¨∏Ø Ω√¿€)
+    // Ìôú Ï∞®Ïßï (Ï¢åÌÅ¥Î¶≠ ÏãúÏûë)
     private void StartCharging()
     {
-        if (isBowEquipped)
+        if (isBowEquipped && !isCharging && player.stamina > (staminaDrainRate * 0.5f))
         {
             isCharging = true;
             animator.SetTrigger(animIDDrawBow);
         }
     }
 
-    // »∞ πﬂªÁ (¡¬≈¨∏Ø «ÿ¡¶)
+    // Ìôú Î∞úÏÇ¨ (Ï¢åÌÅ¥Î¶≠ Ìï¥Ï†ú)
     private void StopCharging()
     {
-        if (isBowEquipped)
+        if (isBowEquipped && isCharging)
         {
             isCharging = false;
             animator.SetTrigger(animIDReleaseBow);
         }
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))

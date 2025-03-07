@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 
@@ -68,53 +68,53 @@ public class PlayerInput : MonoBehaviour
         interactAction.Disable();
     }
 
-    // Á¡ÇÁ µ¿ÀÛ Ã³¸®
+    // ì í”„ ë™ì‘ ì²˜ë¦¬
     void PlayerJump(InputAction.CallbackContext value)
     {
         jumpEvent?.Invoke(); 
     }
 
-    // ÀÌµ¿ Ã³¸®
+    // ì´ë™ ì²˜ë¦¬
     void PlayerMove(InputAction.CallbackContext value)
     {
         dir = value.ReadValue<Vector2>(); 
     }
 
-    // ÀÌµ¿ Ãë¼Ò Ã³¸®
+    // ì´ë™ ì·¨ì†Œ ì²˜ë¦¬
     void PlayerStop(InputAction.CallbackContext value)
     {
         dir = Vector2.zero;
     }
 
-    // ÁÂÅ¬¸¯ ½ÃÀÛ ½Ã Ã³¸®
+    // ì¢Œí´ë¦­ ì‹œì‘ ì‹œ ì²˜ë¦¬
     void PlayerLeftClickStarted(InputAction.CallbackContext value)
     {
         isLeftClickHeld = true; 
         leftClickStartedEvent?.Invoke();
     }
 
-    // ÁÂÅ¬¸¯ ÇØÁ¦ ½Ã Ã³¸®
+    // ì¢Œí´ë¦­ í•´ì œ ì‹œ ì²˜ë¦¬
     void PlayerLeftClickCanceled(InputAction.CallbackContext value)
     {
         isLeftClickHeld = false; 
         leftClickCanceledEvent?.Invoke(); 
     }
 
-    // ¿ìÅ¬¸¯ ½ÃÀÛ ½Ã Ã³¸®
+    // ìš°í´ë¦­ ì‹œì‘ ì‹œ ì²˜ë¦¬
     void PlayerRightClickStarted(InputAction.CallbackContext value)
     {
         isRightClickHeld = true; 
         rightClickStartedEvent?.Invoke();
     }
 
-    // ¿ìÅ¬¸¯ ÇØÁ¦ ½Ã Ã³¸®
+    // ìš°í´ë¦­ í•´ì œ ì‹œ ì²˜ë¦¬
     void PlayerRightClickCanceled(InputAction.CallbackContext value)
     {
         isRightClickHeld = false; 
         rightClickCanceledEvent?.Invoke();
     }
 
-    // »óÈ£ÀÛ¿ë Ã³¸®
+    // ìƒí˜¸ì‘ìš© ì²˜ë¦¬
     void PlayerInteract(InputAction.CallbackContext value)
     {
         interactEvent?.Invoke(); 
