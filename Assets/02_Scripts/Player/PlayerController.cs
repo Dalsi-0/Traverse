@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody rb;
     private Animator animator;
+    private CapsuleCollider capsuleCollider;
 
     private float acceleration = 10f;
     private float deceleration = 5f;
@@ -43,6 +44,9 @@ public class PlayerController : MonoBehaviour
     private int animIDEquipBow;
     private int animIDUnequipBow;
 
+    private PhysicMaterial fallPhysicMaterial;
+    private PhysicMaterial groundPhysicMaterial;
+
     private PlayerInput playerInput; // PlayerInput 스크립트를 참조
     private Player player; // PlayerInput 스크립트를 참조
 
@@ -50,6 +54,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+        capsuleCollider = transform.GetComponent<CapsuleCollider>();
         playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
         player = PlayerManager.Instance.GetPlayerReferences().Player;
 
@@ -66,6 +71,24 @@ public class PlayerController : MonoBehaviour
         animIDEquipBow = Animator.StringToHash("EquipBow");
         animIDUnequipBow = Animator.StringToHash("UnequipBow");
 
+        groundPhysicMaterial = new PhysicMaterial
+        {
+            frictionCombine = PhysicMaterialCombine.Average,
+            bounceCombine = PhysicMaterialCombine.Average,
+            staticFriction = 0.6f,
+            dynamicFriction = 0.6f,
+        };
+
+        fallPhysicMaterial = new PhysicMaterial
+        {
+            frictionCombine = PhysicMaterialCombine.Minimum, 
+            bounceCombine = PhysicMaterialCombine.Minimum,
+            staticFriction = 0f,
+            dynamicFriction = 0f,
+            bounciness = 0f 
+        };
+
+        capsuleCollider.material = groundPhysicMaterial;
     }
 
     private void OnEnable()
@@ -314,6 +337,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            capsuleCollider.material = groundPhysicMaterial;
             animator.SetBool(animIDGrounded, true);
         }
     }
@@ -323,6 +347,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+            capsuleCollider.material = fallPhysicMaterial;
             animator.SetBool(animIDGrounded, false);
         }
     }
