@@ -8,18 +8,19 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
 
-    public float acceleration = 5f;
-    public float deceleration = 5f;
-    public float maxSpeed = 6f;
+    private float acceleration = 5f;
+    private float deceleration = 5f;
+    private float maxSpeed = 6f;
+    private float jumpForce = 7f;
+
     private Vector3 currentVelocity = Vector3.zero;
 
-    public float jumpForce = 7f;
     private bool isGrounded;
     private bool isFalling;
 
-    public float jumpTimeout = 1f;
+    private float jumpTimeout = 1f;
     private float jumpTimeoutDelta = 0f;
-    public float fallTimeout = 1f;
+    private float fallTimeout = 1f;
     private float fallTimeoutDelta = 0f;
 
     private bool isBowEquipped = false; // 활 장착 상태 변수
@@ -41,13 +42,15 @@ public class PlayerController : MonoBehaviour
     private int animIDEquipBow;
     private int animIDUnequipBow;
 
-    public PlayerInput playerInput; // PlayerInput 스크립트를 참조
+    private PlayerInput playerInput; // PlayerInput 스크립트를 참조
+    private Player player; // PlayerInput 스크립트를 참조
 
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
-        playerInput = GetComponent<PlayerInput>();
+        playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
+        player = PlayerManager.Instance.GetPlayerReferences().Player;
 
         jumpTimeoutDelta = jumpTimeout;
         fallTimeoutDelta = fallTimeout;
@@ -81,7 +84,7 @@ public class PlayerController : MonoBehaviour
         playerInput.leftClickCanceledEvent -= StopCharging;
     }
 
-    void Update()
+    private void Update()
     {
         HandleTimeout();
     }
@@ -92,7 +95,7 @@ public class PlayerController : MonoBehaviour
         HandleFalling();
     }
 
-    void Move()
+    private void Move()
     {
         targetDir = playerInput.GetMoveDirection(); // moveAction에 할당된 값
 
@@ -168,7 +171,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void HandleTimeout()
+    private void HandleTimeout()
     {
         if (jumpTimeoutDelta > 0)
         {
@@ -181,9 +184,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void HandleJump()
+    private void HandleJump()
     {
-        if (isGrounded && jumpTimeoutDelta <= 0.0f)
+        if (isGrounded && jumpTimeoutDelta <= 0.0f && player.ConsumeStamina(30))
         {
             animator.SetTrigger(animIDJump);
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
