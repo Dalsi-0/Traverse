@@ -233,12 +233,13 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    /*
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Vector3 boxSize = new Vector3(transform.lossyScale.x * 0.5f, 0.2f, transform.lossyScale.z * 0.5f);
         Gizmos.DrawWireCube(groundCheck.position, boxSize);
-    }
+    }*/
 
     private void HandleRegularMovement(Vector3 moveDirection)
     {
