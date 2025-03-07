@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using static UnityEngine.Rendering.DebugUI;
@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider capsuleCollider;
 
     private float acceleration = 10f;
-    private float deceleration = 5f;
+    private float deceleration = 10f;
     private float maxSpeed = 10f;
     private float jumpForce = 7f;
     private float staminaDrainRate = 10f;
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
             bounciness = 0f 
         };
 
-      //  capsuleCollider.material = groundPhysicMaterial;
+        capsuleCollider.material = groundPhysicMaterial;
     }
 
     private void OnEnable()
