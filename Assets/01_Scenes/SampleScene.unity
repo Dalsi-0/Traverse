@@ -2101,12 +2101,12 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: a2af5789-e950-40a1-b6b3-dbe7a191672f
+    m_Id: 1c561630-5c47-406a-bb6d-912e6304164a
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2DVector
-      m_Id: 4a87232d-4776-4be6-8d1c-2760a1826da0
+      m_Id: 91ac579f-5c57-41cc-b2f3-00f1ce22ec75
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -2114,7 +2114,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: Up
-      m_Id: de564384-389a-414a-9998-60993205d6b8
+      m_Id: 984d59f1-709c-4dcd-8d2e-3f79db91cd6e
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -2122,7 +2122,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Down
-      m_Id: fabd4982-bd4b-4a4d-ad6e-a983de8b7db9
+      m_Id: 85fe6572-c5ef-4d76-9aa2-aacb8a8503c2
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -2130,7 +2130,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Left
-      m_Id: 02b1fc6e-83dc-4461-ac66-8cd61b41de1d
+      m_Id: cbf8eadb-d3da-4ce4-b50d-417a859aa012
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -2138,7 +2138,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Right
-      m_Id: bac04793-eacc-4487-bcec-137c3751bbe4
+      m_Id: cac2f27b-be50-4026-a739-142d9b84a6b6
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -2150,12 +2150,12 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 488bcd77-b82f-4a2a-b8dc-a5b5725322c1
+    m_Id: 35ad84a4-4e57-4bfc-ba4b-3adf2cd0c3ff
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: c49efbcc-1723-49f4-b52e-3e819510bdb5
+      m_Id: a18adb69-d578-4a09-bdf7-5f7a360cad16
       m_Path: <Keyboard>/space
       m_Interactions: 
       m_Processors: 
@@ -2167,12 +2167,12 @@ MonoBehaviour:
     m_Name: LeftClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 182da80e-d537-4de4-965a-32dd7f51ff30
+    m_Id: 472f56b5-c693-42db-a0ef-586f20fd41c8
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 65007727-e91f-4eae-849a-6007952e3c8d
+      m_Id: 8ab5beb1-5bd3-4c95-bf03-baf3229f5f0c
       m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
@@ -2184,12 +2184,12 @@ MonoBehaviour:
     m_Name: RightClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 5d6fa61c-f31e-427c-a702-8bf14c381271
+    m_Id: abdd2794-e2d4-4e15-b01f-c15ae232ee67
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: cfb8a7c5-ca84-4017-aaa8-607f2c2d5c12
+      m_Id: d3739796-94d0-4fb5-a1f3-5d5a42ce4918
       m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
@@ -2201,12 +2201,12 @@ MonoBehaviour:
     m_Name: Interact
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 63007618-cf8e-4656-ba53-40daaece1c3f
+    m_Id: 374f3ede-2aeb-42ba-8eff-5e87f3811641
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 3308876c-508d-4277-bddd-409226ff9a16
+      m_Id: 60b97c6e-dd57-4dcb-a260-fd2a27e56a32
       m_Path: <Keyboard>/f
       m_Interactions: 
       m_Processors: 
@@ -3114,7 +3114,6 @@ GameObject:
   - component: {fileID: 1490587642}
   - component: {fileID: 1490587641}
   - component: {fileID: 1490587640}
-  - component: {fileID: 1490587643}
   m_Layer: 5
   m_Name: HUDCanvas
   m_TagString: Untagged
@@ -3207,18 +3206,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1490587643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1490587638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70b81edcbc2d45e4e835c4013ed4182f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1510144874
 GameObject:
   m_ObjectHideFlags: 0
