@@ -24,6 +24,8 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         PlayerManager.Instance.OnStaminaChanged += UpdateStaminaUI;
+        PlayerManager.Instance.OnHpHeal += UpdateHpUI;
+        PlayerManager.Instance.OnHpDamage += UpdateHpUI;
     }
 
     private void UpdateStaminaUI()
@@ -33,6 +35,12 @@ public class UIManager : MonoBehaviour
 
         GetUIReferences().StaminaBarImage.fillAmount = PlayerManager.Instance.GetPlayerReferences().Player.stamina
             / PlayerManager.Instance.GetPlayerReferences().Player.maxStamina;
+    }
+
+    private void UpdateHpUI()
+    {
+        GetUIReferences().HealthBarImage.fillAmount = PlayerManager.Instance.GetPlayerReferences().Player.hp
+            / PlayerManager.Instance.GetPlayerReferences().Player.maxHp;
     }
 
 

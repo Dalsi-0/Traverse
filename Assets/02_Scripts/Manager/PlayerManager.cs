@@ -6,9 +6,9 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
-    /*
-    public event Action OnHealthHeal;
-    public event Action OnHealthDamage;*/
+    
+    public event Action OnHpHeal;
+    public event Action OnHpDamage;
     public event Action OnStaminaChanged;
 
     private PlayerReferences playerReferences;
@@ -24,6 +24,16 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void NotifyHpHeal()
+    {
+        OnHpHeal?.Invoke();
+    }
+
+    public void NotifyHpDamage()
+    {
+        OnHpDamage?.Invoke();
     }
 
     public void NotifyStaminaChanged()

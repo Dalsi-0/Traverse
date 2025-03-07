@@ -4,10 +4,10 @@ using static IEntityActions;
 
 public class Player : MonoBehaviour, IDamageable
 {
-    public float health = 100f;
+    public float hp = 100f;
     public float stamina = 100f;
     public float attackPower = 10f;
-    public float maxHealth = 100f;
+    public float maxHp = 100f;
     public float maxStamina = 100f;
 
     public float staminaRegenRate = 5f;
@@ -17,8 +17,8 @@ public class Player : MonoBehaviour, IDamageable
     // 체력 감소
     public void TakeDamage(float amount)
     {
-        health -= amount;
-        if (health <= 0f)
+        hp -= amount;
+        if (hp <= 0f)
         {
             Die();
         }
@@ -27,8 +27,8 @@ public class Player : MonoBehaviour, IDamageable
     // 체력 회복
     public void Heal(float amount)
     {
-        health += amount;
-        if (health > maxHealth) health = maxHealth;
+        hp += amount;
+        if (hp > maxHp) hp = maxHp;
     }
 
     // 스태미나 소비
