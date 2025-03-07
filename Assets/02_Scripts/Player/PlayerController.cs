@@ -8,9 +8,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
 
-    private float acceleration = 5f;
+    private float acceleration = 10f;
     private float deceleration = 5f;
-    private float maxSpeed = 6f;
+    private float maxSpeed = 10f;
     private float jumpForce = 7f;
     private float staminaDrainRate = 10f;
 
