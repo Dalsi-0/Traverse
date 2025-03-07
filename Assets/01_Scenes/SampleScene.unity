@@ -1861,11 +1861,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68a49b7ec46ee0f41bab5fcd503f0465, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  hp: 100
   stamina: 100
   attackPower: 10
-  maxHealth: 100
+  maxHp: 100
   maxStamina: 100
+  staminaRegenRate: 5
+  staminaRegenDelay: 2
 --- !u!114 &1046401402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,12 +1884,12 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: b57e7b51-cea1-49f2-9434-757a58a9809f
+    m_Id: 10d81f89-484a-4ba4-9f33-a9a9363c6bce
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2DVector
-      m_Id: 4caac440-d7bf-4f8d-888d-3bb2d48290ab
+      m_Id: 7f668099-3833-4e13-92c4-d856d2931235
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -1895,7 +1897,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: Up
-      m_Id: 5e744c5a-0c0a-470c-beb6-8953a54ed00d
+      m_Id: 613be2a0-0ca0-49fd-876b-cf300f97e111
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -1903,7 +1905,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Down
-      m_Id: b5fcd1c5-7967-44ec-b57f-fa45e16812ae
+      m_Id: 460bdc5b-fe31-4e15-9770-424167efc1fd
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -1911,7 +1913,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Left
-      m_Id: 1cc6d82b-6bab-4090-a05c-212968cb9d9b
+      m_Id: 9d91f411-4501-4350-935c-b974566bf16f
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -1919,7 +1921,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Right
-      m_Id: 16841e14-eb70-4611-a8b4-6e8a5176a979
+      m_Id: cac4b7c6-b251-471e-905d-11bce26eb331
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -1931,12 +1933,12 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 46b46e23-d6bc-46eb-ba3d-e32fa5024e38
+    m_Id: 5125fcb3-9f2e-472d-8a15-bfba511e3ef3
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 755e12aa-40d6-4c4b-92ee-e373f22343d9
+      m_Id: ad054203-1276-4114-b91a-5f28ad11c833
       m_Path: <Keyboard>/space
       m_Interactions: 
       m_Processors: 
@@ -1948,12 +1950,12 @@ MonoBehaviour:
     m_Name: LeftClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 69570fd4-495a-4530-99be-8bceee4e9980
+    m_Id: 820b70a9-8498-4887-a53c-ac3a8a187259
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 105d84fd-d864-4490-9f3e-e97ff2d39c8b
+      m_Id: 120eddfd-c6f2-4def-8440-6c0c93c77c8a
       m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
@@ -1965,12 +1967,12 @@ MonoBehaviour:
     m_Name: RightClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 1a934708-0221-4a1d-890a-b71bee947f3d
+    m_Id: 911193bc-0e8d-46eb-9578-43f602064124
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 62182a5c-5e7c-4030-848f-587494d0b437
+      m_Id: 73f11c1c-0c0a-4a01-8927-43ddbad366d3
       m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
@@ -1982,12 +1984,12 @@ MonoBehaviour:
     m_Name: Interact
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 41de3620-8dcd-40dc-a27e-182a02fd6656
+    m_Id: 0b309022-5b5f-44fe-b300-9312943e5769
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 12684b2e-12d8-44ca-b83a-bfc8cbee3d50
+      m_Id: c45d0df3-ecfb-47ff-bc9f-f0dac99c26c3
       m_Path: <Keyboard>/f
       m_Interactions: 
       m_Processors: 
@@ -2789,9 +2791,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b81edcbc2d45e4e835c4013ed4182f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarImage: {fileID: 483888600}
-  staminaBarImage: {fileID: 1309134511}
-  staminaBarObject: {fileID: 1338320193}
 --- !u!1 &1666566726
 GameObject:
   m_ObjectHideFlags: 3
@@ -2919,6 +2918,126 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1776067035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1776067040}
+  - component: {fileID: 1776067039}
+  - component: {fileID: 1776067038}
+  - component: {fileID: 1776067037}
+  - component: {fileID: 1776067036}
+  m_Layer: 0
+  m_Name: JumpPad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1776067036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776067035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83e7f3b222249d046bea6444673dba93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceForce: 10
+  height: 5
+--- !u!65 &1776067037
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776067035}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1776067038
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776067035}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1776067039
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776067035}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1776067040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776067035}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.387, y: -0.466, z: 0.25783497}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1794713949
 GameObject:
   m_ObjectHideFlags: 0
@@ -3292,3 +3411,4 @@ SceneRoots:
   - {fileID: 1846486642}
   - {fileID: 1398311895}
   - {fileID: 2124091742}
+  - {fileID: 1776067040}
