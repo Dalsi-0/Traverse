@@ -5,7 +5,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody rb;
+    public Rigidbody PlayerRigidbody { get; private set; }
     private Animator animator;
     private CapsuleCollider capsuleCollider;
 
@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 currentVelocity = Vector3.zero;
 
-    private bool isGrounded;
-    private bool isFalling;
+    public bool IsGrounded { get; private set; }
+    public bool IsFalling { get; private set; }
 
     private float jumpTimeout = 1f;
     private float jumpTimeoutDelta = 0f;
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        PlayerRigidbody = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
         capsuleCollider = transform.GetComponent<CapsuleCollider>();
         playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
             bounciness = 0f 
         };
 
-        capsuleCollider.material = groundPhysicMaterial;
+      //  capsuleCollider.material = groundPhysicMaterial;
     }
 
     private void OnEnable()
@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
                 currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
             }
 
-            rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
+            PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
 
             float speedRatio = currentVelocity.magnitude / (maxSpeed * (isCharging ? 0.3f : 0.5f));
             animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
@@ -191,14 +191,14 @@ public class PlayerController : MonoBehaviour
                 currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
             }
 
-            rb.velocity = new Vector3(currentVelocity.x, rb.velocity.y, currentVelocity.z);
+            PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
             float speedRatio = currentVelocity.magnitude / maxSpeed;
             animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
         }
     }
 
     private void HandleChargingState()
-    {
+    {   
         if (isCharging)  // 활 차징 중일 때
         {
             if (player.stamina > 0)
@@ -240,14 +240,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (isGrounded && jumpTimeoutDelta <= 0.0f && player.ConsumeStamina(30))
+        if (IsGrounded && jumpTimeoutDelta <= 0.0f && player.ConsumeStamina(30))
         {
             animator.SetTrigger(animIDJump);
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-            isGrounded = false;
+            PlayerRigidbody.velocity = new Vector3(PlayerRigidbody.velocity.x, jumpForce, PlayerRigidbody.velocity.z);
+            IsGrounded = false;
             animator.SetBool(animIDGrounded, false);
 
-            isFalling = false;
+            IsFalling = false;
             animator.SetBool(animIDIsFalling, false);
 
             if (isBowEquipped)
@@ -260,12 +260,12 @@ public class PlayerController : MonoBehaviour
 
     private void HandleFalling()
     {
-        if (!isGrounded && rb.velocity.y < 0 && jumpTimeoutDelta < 0.0f)
+        if (!IsGrounded && PlayerRigidbody.velocity.y < 0 && jumpTimeoutDelta < 0.0f)
         {
             jumpTimeoutDelta = jumpTimeout;
-            if (!isFalling)
+            if (!IsFalling)
             {
-                isFalling = true;
+                IsFalling = true;
                 animator.SetBool(animIDIsFalling, true);
             }
 
@@ -279,9 +279,9 @@ public class PlayerController : MonoBehaviour
         else
         {
             fallTimeoutDelta = fallTimeout;
-            if (isFalling)
+            if (IsFalling)
             {
-                isFalling = false;
+                IsFalling = false;
                 animator.SetBool(animIDIsFalling, false);
             }
         }
@@ -336,7 +336,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            IsGrounded = true;
             capsuleCollider.material = groundPhysicMaterial;
             animator.SetBool(animIDGrounded, true);
         }
@@ -346,7 +346,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false;
+            IsGrounded = false;
             capsuleCollider.material = fallPhysicMaterial;
             animator.SetBool(animIDGrounded, false);
         }
