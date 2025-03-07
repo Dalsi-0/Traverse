@@ -188,15 +188,16 @@ public class PlayerController : MonoBehaviour
         cameraForward.y = 0f;
         cameraRight.y = 0f;
 
-        Vector3 moveDirection = (cameraForward * smoothDir.y + cameraRight * smoothDir.x).normalized;
-
-       // bool isOnSlope = IsOnSlope();
+        bool isOnSlope = IsOnSlope();
         IsGrounded();
 
         Vector3 gravity = Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
-
-        if (isGrounded /*&& isOnSlope*/)
+        
+        Vector3 moveDirection = (cameraForward * smoothDir.y + cameraRight * smoothDir.x).normalized;
+        
+        if (isGrounded && isOnSlope)
         {
+          //  moveDirection = AdjustDirectionToSlope(moveDirection);
             gravity = Vector3.zero;
             PlayerRigidbody.useGravity = false;
         }
@@ -246,12 +247,6 @@ public class PlayerController : MonoBehaviour
         Vector3 boxSize = new Vector3(transform.lossyScale.x * 0.5f, 0.2f, transform.lossyScale.z * 0.5f);
         Gizmos.DrawWireCube(groundCheck.position, boxSize);
     }
-
-
-
-
-
-
 
     private void HandleRegularMovement(Vector3 moveDirection)
     {

@@ -2043,6 +2043,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundCheck: {fileID: 1636928355}
+  raycastOrigin: {fileID: 1543523515}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!4 &1046401400
 Transform:
   m_ObjectHideFlags: 0
@@ -2059,6 +2063,7 @@ Transform:
   - {fileID: 472956685}
   - {fileID: 1147818064}
   - {fileID: 1636928355}
+  - {fileID: 1543523515}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1046401401
@@ -2096,12 +2101,12 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 91a28878-7408-453f-89db-2fd7a957e8e1
+    m_Id: f0c321ac-7664-4dce-954d-c98f62f2b968
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2DVector
-      m_Id: 6290ebea-65f5-4b0e-9509-e1a7bf80e31d
+      m_Id: 93bba8b5-e4cc-443d-b115-17a53f3faad8
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -2109,7 +2114,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: Up
-      m_Id: 25cbec9f-b0df-4e41-8ce6-505331bc27f2
+      m_Id: 17707e9b-ac34-4e2f-999f-fb16c9626a4f
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -2117,7 +2122,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Down
-      m_Id: 58da7a17-1e7a-433d-9d33-dcf7b2cc8e49
+      m_Id: 842a5083-16bc-407a-8d47-509444b2a1ee
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -2125,7 +2130,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Left
-      m_Id: cdeedc3e-4dff-4371-b0cb-bf18cd3eb9de
+      m_Id: 25c653ec-5caa-478b-baba-9eded8cfe954
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -2133,7 +2138,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Right
-      m_Id: 42cb58e2-23e0-496b-908d-9f9045d6ed9a
+      m_Id: 7ede7dfe-0abe-4e33-bc23-4af765033c87
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -2145,12 +2150,12 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: b5d86ada-92c2-414b-8661-c08220d626bc
+    m_Id: f3734b77-5006-4e96-8ea1-feeac57b97d2
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 7a9a927c-12e2-4c10-9053-6fe3769644b1
+      m_Id: 3070d22c-ab45-4cf7-a37c-4126c1ed52ac
       m_Path: <Keyboard>/space
       m_Interactions: 
       m_Processors: 
@@ -2162,12 +2167,12 @@ MonoBehaviour:
     m_Name: LeftClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 69843727-96db-48bd-910f-29854c771142
+    m_Id: 71cf92be-4d71-4b2a-bec4-efd41d519ff0
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: f443cffe-c691-4b7c-b4a9-c5877cc178d5
+      m_Id: 92edc57f-2f3d-49d9-bc81-8be0c033fae9
       m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
@@ -2179,12 +2184,12 @@ MonoBehaviour:
     m_Name: RightClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 86705b09-17a6-4151-87b0-e3e3db2b8ff5
+    m_Id: cb930ac5-12d3-4ec4-9444-dd6d96057f8b
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 1fa47a87-240f-4597-8f3c-ab7399d2108f
+      m_Id: 0104af59-eb14-4a2b-981d-fbcfdb2c3fcb
       m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
@@ -2196,12 +2201,12 @@ MonoBehaviour:
     m_Name: Interact
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: b332d2df-d90d-471a-b82b-7bb821d9259d
+    m_Id: b4193f7c-d17c-4c5b-9173-f1ce9bc7dc92
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: dce151c2-779e-4233-99fb-df6f5bb9cc72
+      m_Id: da6cf9ca-177f-4d87-8e3e-85cf6cf0e270
       m_Path: <Keyboard>/f
       m_Interactions: 
       m_Processors: 
@@ -2735,8 +2740,8 @@ Transform:
   m_GameObject: {fileID: 1369841438}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.31564146, w: 0.9488785}
-  m_LocalPosition: {x: 12.94, y: 1.04, z: 0.07673037}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 15.65, y: 3.07, z: 0.07673037}
+  m_LocalScale: {x: 1.6029, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3333,6 +3338,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45.925}
+--- !u!1 &1543523514
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1543523515}
+  m_Layer: 0
+  m_Name: raycastOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1543523515
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543523514}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.992, z: 0.446}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1046401400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1612833217
 GameObject:
   m_ObjectHideFlags: 0
@@ -3447,7 +3483,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1636928355}
-  - component: {fileID: 1636928356}
   m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
@@ -3470,27 +3505,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1046401400}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1636928356
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1636928354}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 0.3549254, y: 0.14667296, z: 0.36254454}
-  m_Center: {x: 0.002539754, y: 0.05079329, z: 0.021587133}
 --- !u!1 &1666566726
 GameObject:
   m_ObjectHideFlags: 3
