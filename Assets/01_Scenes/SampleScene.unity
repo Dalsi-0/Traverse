@@ -2101,12 +2101,12 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: f0c321ac-7664-4dce-954d-c98f62f2b968
+    m_Id: a2af5789-e950-40a1-b6b3-dbe7a191672f
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2DVector
-      m_Id: 93bba8b5-e4cc-443d-b115-17a53f3faad8
+      m_Id: 4a87232d-4776-4be6-8d1c-2760a1826da0
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -2114,7 +2114,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: Up
-      m_Id: 17707e9b-ac34-4e2f-999f-fb16c9626a4f
+      m_Id: de564384-389a-414a-9998-60993205d6b8
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -2122,7 +2122,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Down
-      m_Id: 842a5083-16bc-407a-8d47-509444b2a1ee
+      m_Id: fabd4982-bd4b-4a4d-ad6e-a983de8b7db9
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -2130,7 +2130,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Left
-      m_Id: 25c653ec-5caa-478b-baba-9eded8cfe954
+      m_Id: 02b1fc6e-83dc-4461-ac66-8cd61b41de1d
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -2138,7 +2138,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Right
-      m_Id: 7ede7dfe-0abe-4e33-bc23-4af765033c87
+      m_Id: bac04793-eacc-4487-bcec-137c3751bbe4
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -2150,12 +2150,12 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: f3734b77-5006-4e96-8ea1-feeac57b97d2
+    m_Id: 488bcd77-b82f-4a2a-b8dc-a5b5725322c1
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 3070d22c-ab45-4cf7-a37c-4126c1ed52ac
+      m_Id: c49efbcc-1723-49f4-b52e-3e819510bdb5
       m_Path: <Keyboard>/space
       m_Interactions: 
       m_Processors: 
@@ -2167,12 +2167,12 @@ MonoBehaviour:
     m_Name: LeftClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 71cf92be-4d71-4b2a-bec4-efd41d519ff0
+    m_Id: 182da80e-d537-4de4-965a-32dd7f51ff30
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 92edc57f-2f3d-49d9-bc81-8be0c033fae9
+      m_Id: 65007727-e91f-4eae-849a-6007952e3c8d
       m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
@@ -2184,12 +2184,12 @@ MonoBehaviour:
     m_Name: RightClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: cb930ac5-12d3-4ec4-9444-dd6d96057f8b
+    m_Id: 5d6fa61c-f31e-427c-a702-8bf14c381271
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 0104af59-eb14-4a2b-981d-fbcfdb2c3fcb
+      m_Id: cfb8a7c5-ca84-4017-aaa8-607f2c2d5c12
       m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
@@ -2201,12 +2201,12 @@ MonoBehaviour:
     m_Name: Interact
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: b4193f7c-d17c-4c5b-9173-f1ce9bc7dc92
+    m_Id: 63007618-cf8e-4656-ba53-40daaece1c3f
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: da6cf9ca-177f-4d87-8e3e-85cf6cf0e270
+      m_Id: 3308876c-508d-4277-bddd-409226ff9a16
       m_Path: <Keyboard>/f
       m_Interactions: 
       m_Processors: 
@@ -2739,13 +2739,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1369841438}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.31564146, w: 0.9488785}
+  m_LocalRotation: {x: 0, y: 0, z: 0.32556805, w: 0.9455186}
   m_LocalPosition: {x: 15.65, y: 3.07, z: 0.07673037}
   m_LocalScale: {x: 1.6029, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 36.799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 38}
 --- !u!1 &1398311891
 GameObject:
   m_ObjectHideFlags: 0

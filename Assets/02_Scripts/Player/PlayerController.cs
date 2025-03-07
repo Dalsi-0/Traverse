@@ -39,23 +39,23 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private Player player;
 
-    private bool isBowEquipped = false; // 활 장착 상태
-    private bool isCharging = false;    // 활 차징 상태
+    private bool isBowEquipped = false; 
+    private bool isCharging = false;    
     private bool isGrounded;
     private bool isFalling;
+    private bool isSlope;
 
 
 
 
     [SerializeField] Transform groundCheck;
     [SerializeField] Transform raycastOrigin;
-
     [SerializeField] private LayerMask groundLayer;
-    
     private const float RAY_DISTANCE = 2f;
     private RaycastHit slopeHit;
+    private float maxSlopeAngle = 40f; // 경사각도 최대치
+    private float slopeDownForce = 80f; 
 
-    private float maxSlopeAngle = 40f;
     /*
 
     protected void Move()
@@ -67,10 +67,8 @@ public class PlayerController : MonoBehaviour
         bool isOnSlope = IsOnSlope();
         bool isGrounded = IsGrounded();
 
-        //----------------수정-----------------
         Vector3 velocity = CalculateNextFrameGroundAngle(currentMoveSpeed) < maxSlopeAngle ?
                            direction : Vector3.zero;
-        //-------------------------------------
         Vector3 gravity = Vector3.down * Mathf.Abs(rigidBody.velocity.y);
 
         if (isGrounded && isOnSlope)
@@ -89,7 +87,6 @@ public class PlayerController : MonoBehaviour
     }
     private float CalculateNextFrameGroundAngle(float moveSpeed)
     {
-        // 다음 프레임 캐릭터 앞 부분 위치
         var nextFramePlayerPosition =
                            raycastOrigin.position + direction * moveSpeed * Time.fixedDeltaTime;
 
@@ -188,22 +185,17 @@ public class PlayerController : MonoBehaviour
         cameraForward.y = 0f;
         cameraRight.y = 0f;
 
-        bool isOnSlope = IsOnSlope();
+        isSlope = IsOnSlope();
         IsGrounded();
 
         Vector3 gravity = Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
         
         Vector3 moveDirection = (cameraForward * smoothDir.y + cameraRight * smoothDir.x).normalized;
-        
-        if (isGrounded && isOnSlope)
+
+        if (isGrounded && isSlope)
         {
-          //  moveDirection = AdjustDirectionToSlope(moveDirection);
-            gravity = Vector3.zero;
-            PlayerRigidbody.useGravity = false;
-        }
-        else
-        {
-            PlayerRigidbody.useGravity = true;
+            moveDirection = AdjustDirectionToSlope(moveDirection);
+            PlayerRigidbody.AddForce(-slopeHit.normal * slopeDownForce, ForceMode.Force);
         }
 
         if (isBowEquipped)
@@ -227,7 +219,7 @@ public class PlayerController : MonoBehaviour
         
         isGrounded = Physics.CheckBox(groundCheck.position, boxSize, Quaternion.identity, groundLayer);
         
-        animator.SetBool(animIDGrounded, isGrounded); // 애니메이션 상태 업데이트
+        animator.SetBool(animIDGrounded, isGrounded); 
     }
 
     public bool IsOnSlope()
@@ -267,17 +259,19 @@ public class PlayerController : MonoBehaviour
 
     private void HandleBowMovement(Vector3 moveDirection)
     {
+        Vector3 cameraForward = mainCam.transform.forward;
+        cameraForward.y = 0f;
+
+        Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+
         if (moveDirection.magnitude > 0)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
             float speedModifier = isCharging ? 0.2f : 0.3f;
             currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
         }
         else
         {
-            Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
             currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
         }
 
@@ -332,8 +326,11 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded && jumpTimeoutDelta <= 0f && player.ConsumeStamina(30))
         {
+            jumpTimeoutDelta = jumpTimeout;
             animator.SetTrigger(animIDJump);
-            PlayerRigidbody.velocity = new Vector3(PlayerRigidbody.velocity.x, jumpForce, PlayerRigidbody.velocity.z);
+
+            float jumpPower = isSlope ? jumpForce + slopeDownForce *0.065f : jumpForce;
+            PlayerRigidbody.velocity = new Vector3(PlayerRigidbody.velocity.x, jumpPower, PlayerRigidbody.velocity.z);
             
             if (isBowEquipped)
             {
