@@ -14,7 +14,7 @@ public class Player : MonoBehaviour, IDamageable
     public float staminaRegenDelay = 2f;
     private Coroutine staminaRegenCoroutine;
 
-    // Ã¼·Â °¨¼Ò
+    // ì²´ë ¥ ê°ì†Œ
     public void TakeDamage(float amount)
     {
         hp -= amount;
@@ -24,14 +24,14 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    // Ã¼·Â È¸º¹
+    // ì²´ë ¥ íšŒë³µ
     public void Heal(float amount)
     {
         hp += amount;
         if (hp > maxHp) hp = maxHp;
     }
 
-    // ½ºÅÂ¹Ì³ª ¼Òºñ
+    // ìŠ¤íƒœë¯¸ë‚˜ ì†Œë¹„
     public bool ConsumeStamina(float amount)
     {
         if (stamina < amount)
@@ -52,19 +52,19 @@ public class Player : MonoBehaviour, IDamageable
         return true;
     }
 
-    // ½ºÅÂ¹Ì³ª È¸º¹ ÄÚ·çÆ¾
+    // ìŠ¤íƒœë¯¸ë‚˜ íšŒë³µ ì½”ë£¨í‹´
     private IEnumerator RegenerateStamina()
     {
         yield return new WaitForSeconds(staminaRegenDelay);
 
         while (stamina < maxStamina)
         {
-            PlayerManager.Instance.NotifyStaminaChanged();
             stamina += staminaRegenRate * Time.deltaTime;
-            if (stamina > maxStamina)
+
+            PlayerManager.Instance.NotifyStaminaChanged();
+            if (stamina >= maxStamina)
             {
                 stamina = maxStamina;
-
                 staminaRegenCoroutine = null;
                 yield break;
             }
@@ -72,16 +72,16 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    // °ø°İ ¸Ş¼­µå
+    // ê³µê²© ë©”ì„œë“œ
     public void Attack()
     {
-        // °ø°İ ·ÎÁ÷ (¿¹½Ã: °ø°İ·Â¿¡ µû¸¥ µ¥¹ÌÁö °è»ê)
+        // ê³µê²© ë¡œì§ (ì˜ˆì‹œ: ê³µê²©ë ¥ì— ë”°ë¥¸ ë°ë¯¸ì§€ ê³„ì‚°)
         Debug.Log("Attacking with " + attackPower + " damage.");
     }
 
     private void Die()
     {
         Debug.Log("Player has died.");
-        // ÇÃ·¹ÀÌ¾î »ç¸Á Ã³¸®
+        // í”Œë ˆì´ì–´ ì‚¬ë§ ì²˜ë¦¬
     }
 }
