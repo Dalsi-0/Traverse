@@ -1,38 +1,27 @@
 using UnityEngine;
-using System.Collections;
-using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody PlayerRigidbody { get; private set; }
     private Animator animator;
     private CapsuleCollider capsuleCollider;
+    private Camera mainCam;
 
     private float acceleration = 10f;
     private float deceleration = 10f;
     private float maxSpeed = 10f;
     private float jumpForce = 7f;
     private float staminaDrainRate = 10f;
-
     private Vector3 currentVelocity = Vector3.zero;
-
-    public bool IsGrounded { get; private set; }
-    public bool IsFalling { get; private set; }
+    private Vector2 targetDir;
+    private Vector2 smoothDir;
+    private float smoothTime = 0.1f;
 
     private float jumpTimeout = 1f;
     private float jumpTimeoutDelta = 0f;
-    private float fallTimeout = 1f;
+    private float fallTimeout = 0.1f;
     private float fallTimeoutDelta = 0f;
 
-    private bool isBowEquipped = false; // 활 장착 상태 변수
-    private bool isCharging = false;    // 활 차징 상태 변수
-
-    private Vector2 targetDir;
-    private Vector2 smoothDir; // 부드러운 이동을 위한 변수
-    private float smoothTime = 0.1f; // 부드럽게 변환되는 시간
-
-    // animation IDs
     private int animIDSpeed;
     private int animIDGrounded;
     private int animIDJump;
@@ -47,19 +36,84 @@ public class PlayerController : MonoBehaviour
     private PhysicMaterial fallPhysicMaterial;
     private PhysicMaterial groundPhysicMaterial;
 
-    private PlayerInput playerInput; // PlayerInput 스크립트를 참조
-    private Player player; // PlayerInput 스크립트를 참조
+    private PlayerInput playerInput;
+    private Player player;
+
+    private bool isBowEquipped = false; // 활 장착 상태
+    private bool isCharging = false;    // 활 차징 상태
+    private bool isGrounded;
+    private bool isFalling;
+
+
+
+
+    [SerializeField] Transform groundCheck;
+    [SerializeField] Transform raycastOrigin;
+
+    [SerializeField] private LayerMask groundLayer;
+    
+    private const float RAY_DISTANCE = 2f;
+    private RaycastHit slopeHit;
+
+    private float maxSlopeAngle = 40f;
+    /*
+
+    protected void Move()
+    {
+        float currentMoveSpeed = player.MoveSpeed * CONVERT_UNIT_VALUE;
+        float animationPlaySpeed = DEFAULT_ANIMATION_PLAYSPEED +
+                                   GetAnimationSyncWithMovement(currentMoveSpeed);
+
+        bool isOnSlope = IsOnSlope();
+        bool isGrounded = IsGrounded();
+
+        //----------------수정-----------------
+        Vector3 velocity = CalculateNextFrameGroundAngle(currentMoveSpeed) < maxSlopeAngle ?
+                           direction : Vector3.zero;
+        //-------------------------------------
+        Vector3 gravity = Vector3.down * Mathf.Abs(rigidBody.velocity.y);
+
+        if (isGrounded && isOnSlope)
+        {
+            velocity = AdjustDirectionToSlope(direction);
+            gravity = Vector3.zero;
+            rigidBody.useGravity = false;
+        }
+        else
+        {
+            rigidBody.useGravity = true;
+        }
+
+        LookAt();
+        rigidBody.velocity = velocity * currentMoveSpeed + gravity;
+    }
+    private float CalculateNextFrameGroundAngle(float moveSpeed)
+    {
+        // 다음 프레임 캐릭터 앞 부분 위치
+        var nextFramePlayerPosition =
+                           raycastOrigin.position + direction * moveSpeed * Time.fixedDeltaTime;
+
+        if (Physics.Raycast(nextFramePlayerPosition, Vector3.down, out RaycastHit hitInfo,
+                            RAY_DISTANCE, groundLayer))
+            return Vector3.Angle(Vector3.up, hitInfo.normal);
+        return 0f;
+    }*/
+
+
 
     private void Awake()
     {
         PlayerRigidbody = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
         capsuleCollider = transform.GetComponent<CapsuleCollider>();
+        mainCam = Camera.main;
+
         playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
         player = PlayerManager.Instance.GetPlayerReferences().Player;
 
         jumpTimeoutDelta = jumpTimeout;
         fallTimeoutDelta = fallTimeout;
+
         animIDSpeed = Animator.StringToHash("speed");
         animIDGrounded = Animator.StringToHash("isGrounded");
         animIDJump = Animator.StringToHash("Jump");
@@ -81,11 +135,11 @@ public class PlayerController : MonoBehaviour
 
         fallPhysicMaterial = new PhysicMaterial
         {
-            frictionCombine = PhysicMaterialCombine.Minimum, 
+            frictionCombine = PhysicMaterialCombine.Minimum,
             bounceCombine = PhysicMaterialCombine.Minimum,
             staticFriction = 0f,
             dynamicFriction = 0f,
-            bounciness = 0f 
+            bounciness = 0f
         };
 
         capsuleCollider.material = groundPhysicMaterial;
@@ -123,83 +177,125 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        targetDir = playerInput.GetMoveDirection(); // moveAction에 할당된 값
+        targetDir = playerInput.GetMoveDirection();
 
-        if (targetDir != Vector2.zero)
-        {
-            // 부드럽게 이동 방향을 변화시킴
-            smoothDir = Vector2.Lerp(smoothDir, targetDir, smoothTime); // Lerp로 부드럽게 전환
-        }
-        else
-        {
-            smoothDir = targetDir;
-        }
+        smoothDir = targetDir != Vector2.zero
+                    ? Vector2.Lerp(smoothDir, targetDir, smoothTime)
+                    : targetDir;
 
-        // 이동 방향 처리
-        float moveX = smoothDir.x * 1f;  // 이동 입력값
-        float moveZ = smoothDir.y * 1f;  // 이동 입력값
-        
-        Vector3 cameraForward = Camera.main.transform.forward;
-        Vector3 cameraRight = Camera.main.transform.right;
-
+        Vector3 cameraForward = mainCam.transform.forward;
+        Vector3 cameraRight = mainCam.transform.right;
         cameraForward.y = 0f;
         cameraRight.y = 0f;
 
-        if (isBowEquipped)  // 활 장착 상태일 때
+        Vector3 moveDirection = (cameraForward * smoothDir.y + cameraRight * smoothDir.x).normalized;
+
+       // bool isOnSlope = IsOnSlope();
+        IsGrounded();
+
+        Vector3 gravity = Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
+
+        if (isGrounded /*&& isOnSlope*/)
         {
-            Vector3 moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
-
-            if (moveDirection.magnitude > 0)
-            {
-                // 캐릭터가 카메라 정면을 바라보도록 회전
-                Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-
-                // 활 차징 상태라면 속도를 추가 감소
-                float speedModifier = isCharging ? 0.2f : 0.3f;
-                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
-            }
-            else
-            {
-                // 입력이 없을 때도 캐릭터를 카메라 정면으로 회전
-                Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-
-                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
-            }
-
-            PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
-
-            float speedRatio = currentVelocity.magnitude / (maxSpeed * (isCharging ? 0.3f : 0.5f));
-            animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
-
-            animator.SetFloat(animIDMoveX, moveX);
-            animator.SetFloat(animIDMoveZ, moveZ);
+            gravity = Vector3.zero;
+            PlayerRigidbody.useGravity = false;
         }
-        else  // 활을 장착하지 않았을 때는 기존 방식
+        else
         {
-            Vector3 moveDirection = (cameraForward * moveZ + cameraRight * moveX).normalized;
+            PlayerRigidbody.useGravity = true;
+        }
 
-            if (moveDirection.magnitude > 0)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
-            }
-            else
-            {
-                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
-            }
-
-            PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
-            float speedRatio = currentVelocity.magnitude / maxSpeed;
-            animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
+        if (isBowEquipped)
+        {
+            HandleBowMovement(moveDirection);
+        }
+        else
+        {
+            HandleRegularMovement(moveDirection);
         }
     }
 
+    protected Vector3 AdjustDirectionToSlope(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+
+    public void IsGrounded()
+    {
+        Vector3 boxSize = new Vector3(transform.lossyScale.x*0.5f, 0.2f, transform.lossyScale.z * 0.5f);
+        
+        isGrounded = Physics.CheckBox(groundCheck.position, boxSize, Quaternion.identity, groundLayer);
+        
+        animator.SetBool(animIDGrounded, isGrounded); // 애니메이션 상태 업데이트
+    }
+
+    public bool IsOnSlope()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        if (Physics.Raycast(ray, out slopeHit, RAY_DISTANCE, groundLayer))
+        {
+            var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle != 0f && angle < maxSlopeAngle;
+        }
+        return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Vector3 boxSize = new Vector3(transform.lossyScale.x * 0.5f, 0.2f, transform.lossyScale.z * 0.5f);
+        Gizmos.DrawWireCube(groundCheck.position, boxSize);
+    }
+
+
+
+
+
+
+
+    private void HandleRegularMovement(Vector3 moveDirection)
+    {
+        if (moveDirection.magnitude > 0)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
+        }
+        else
+        {
+            currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+        }
+
+        PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
+        animator.SetFloat(animIDSpeed, currentVelocity.magnitude / maxSpeed);
+    }
+
+    private void HandleBowMovement(Vector3 moveDirection)
+    {
+        if (moveDirection.magnitude > 0)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            float speedModifier = isCharging ? 0.2f : 0.3f;
+            currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
+        }
+        else
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+        }
+
+        PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
+        float speedRatio = currentVelocity.magnitude / (maxSpeed * (isCharging ? 0.3f : 0.5f));
+        animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
+        animator.SetFloat(animIDMoveX, smoothDir.x);
+        animator.SetFloat(animIDMoveZ, smoothDir.y);
+    }
+
     private void HandleChargingState()
-    {   
-        if (isCharging)  // 활 차징 중일 때
+    {
+        if (isCharging)
         {
             if (player.stamina > 0)
             {
@@ -214,13 +310,8 @@ public class PlayerController : MonoBehaviour
 
     private void DrainStamina()
     {
-        // 스태미나가 소모되도록 처리
-        if (player.ConsumeStamina(staminaDrainRate * Time.deltaTime))
+        if (!player.ConsumeStamina(staminaDrainRate * Time.deltaTime))
         {
-        }
-        else
-        {
-            // 스태미나가 부족하면 차징을 취소
             StopCharging();
         }
     }
@@ -232,56 +323,54 @@ public class PlayerController : MonoBehaviour
             jumpTimeoutDelta -= Time.deltaTime;
         }
 
-        if (fallTimeoutDelta >= 0.0f)
+        if (!isGrounded && fallTimeoutDelta >= 0.0f)
         {
             fallTimeoutDelta -= Time.deltaTime;
+        }
+        else if (isGrounded)
+        {
+            fallTimeoutDelta = fallTimeout;
         }
     }
 
     private void HandleJump()
     {
-        if (IsGrounded && jumpTimeoutDelta <= 0.0f && player.ConsumeStamina(30))
+        if (isGrounded && jumpTimeoutDelta <= 0f && player.ConsumeStamina(30))
         {
             animator.SetTrigger(animIDJump);
             PlayerRigidbody.velocity = new Vector3(PlayerRigidbody.velocity.x, jumpForce, PlayerRigidbody.velocity.z);
-            IsGrounded = false;
-            animator.SetBool(animIDGrounded, false);
-
-            IsFalling = false;
-            animator.SetBool(animIDIsFalling, false);
-
+            
             if (isBowEquipped)
             {
                 isBowEquipped = false;
-                isCharging = false; 
+                isCharging = false;
             }
         }
     }
 
     private void HandleFalling()
     {
-        if (!IsGrounded && PlayerRigidbody.velocity.y < 0 && jumpTimeoutDelta < 0.0f)
+        if (!isGrounded && fallTimeoutDelta < 0.0f)
         {
             jumpTimeoutDelta = jumpTimeout;
-            if (!IsFalling)
+            if (!isFalling)
             {
-                IsFalling = true;
+                isFalling = true;
                 animator.SetBool(animIDIsFalling, true);
             }
 
             if (isBowEquipped)
             {
                 isBowEquipped = false;
-                isCharging = false; 
-                animator.ResetTrigger(animIDUnequipBow); // 트리거 강제 해제
+                isCharging = false;
+                animator.ResetTrigger(animIDUnequipBow);
             }
         }
         else
         {
-            fallTimeoutDelta = fallTimeout;
-            if (IsFalling)
+            if (isFalling)
             {
-                IsFalling = false;
+                isFalling = false;
                 animator.SetBool(animIDIsFalling, false);
             }
         }
@@ -296,7 +385,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 활 해제
     private void UnequipBow()
     {
         if (isBowEquipped)
@@ -312,7 +400,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 활 차징 (좌클릭 시작)
     private void StartCharging()
     {
         if (isBowEquipped && !isCharging && player.stamina > (staminaDrainRate * 0.5f))
@@ -322,33 +409,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 활 발사 (좌클릭 해제)
     private void StopCharging()
     {
-        if (isBowEquipped && isCharging)
+        if (isCharging)
         {
             isCharging = false;
             animator.SetTrigger(animIDReleaseBow);
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            IsGrounded = true;
-            capsuleCollider.material = groundPhysicMaterial;
-            animator.SetBool(animIDGrounded, true);
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            IsGrounded = false;
-            capsuleCollider.material = fallPhysicMaterial;
-            animator.SetBool(animIDGrounded, false);
-        }
-    }
 }
