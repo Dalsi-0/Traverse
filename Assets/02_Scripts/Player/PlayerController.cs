@@ -55,7 +55,8 @@ public class PlayerController : MonoBehaviour
     private RaycastHit slopeHit;
     private float maxSlopeAngle = 40f; // 경사각도 최대치
     private float slopeDownForce = 80f;
-    private Vector3 spineRotationOffset = new Vector3(0, 70, 0);
+    private Vector3 spineRotationOffset = new Vector3(0, 85, 0);
+    private Vector3 spineRotationOffsetCharging = new Vector3(0, 95, 0);
 
 
     public Transform spine; // 아바타의 상체
@@ -154,7 +155,8 @@ public class PlayerController : MonoBehaviour
         Vector3 targetDirection = mainCam.transform.forward;
 
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        targetRotation *= Quaternion.Euler(spineRotationOffset);
+
+        targetRotation *= Quaternion.Euler(isCharging ? spineRotationOffsetCharging: spineRotationOffset);
 
         spine.rotation = targetRotation;
     }
