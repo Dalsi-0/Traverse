@@ -54,49 +54,13 @@ public class PlayerController : MonoBehaviour
     private const float RAY_DISTANCE = 2f;
     private RaycastHit slopeHit;
     private float maxSlopeAngle = 40f; // 경사각도 최대치
-    private float slopeDownForce = 80f; 
-
-    /*
-
-    protected void Move()
-    {
-        float currentMoveSpeed = player.MoveSpeed * CONVERT_UNIT_VALUE;
-        float animationPlaySpeed = DEFAULT_ANIMATION_PLAYSPEED +
-                                   GetAnimationSyncWithMovement(currentMoveSpeed);
-
-        bool isOnSlope = IsOnSlope();
-        bool isGrounded = IsGrounded();
-
-        Vector3 velocity = CalculateNextFrameGroundAngle(currentMoveSpeed) < maxSlopeAngle ?
-                           direction : Vector3.zero;
-        Vector3 gravity = Vector3.down * Mathf.Abs(rigidBody.velocity.y);
-
-        if (isGrounded && isOnSlope)
-        {
-            velocity = AdjustDirectionToSlope(direction);
-            gravity = Vector3.zero;
-            rigidBody.useGravity = false;
-        }
-        else
-        {
-            rigidBody.useGravity = true;
-        }
-
-        LookAt();
-        rigidBody.velocity = velocity * currentMoveSpeed + gravity;
-    }
-    private float CalculateNextFrameGroundAngle(float moveSpeed)
-    {
-        var nextFramePlayerPosition =
-                           raycastOrigin.position + direction * moveSpeed * Time.fixedDeltaTime;
-
-        if (Physics.Raycast(nextFramePlayerPosition, Vector3.down, out RaycastHit hitInfo,
-                            RAY_DISTANCE, groundLayer))
-            return Vector3.Angle(Vector3.up, hitInfo.normal);
-        return 0f;
-    }*/
+    private float slopeDownForce = 80f;
+    private Vector3 spineRotationOffset = new Vector3(0, 70, 0);
 
 
+    public Transform spine; // 아바타의 상체
+
+    public float rotationSpeed = 5f; // 회전 속도 조절
 
     private void Awake()
     {
@@ -140,6 +104,12 @@ public class PlayerController : MonoBehaviour
         };
 
         capsuleCollider.material = groundPhysicMaterial;
+
+        spine = animator.GetBoneTransform(HumanBodyBones.Spine); // 상체 transform 가져오기
+        if (spine == null)
+        {
+            Debug.LogError("Spine Transform을 찾을 수 없습니다!");
+        }
     }
 
     private void OnEnable()
@@ -170,6 +140,23 @@ public class PlayerController : MonoBehaviour
     {
         Move();
         HandleFalling();
+    }
+
+    private void LateUpdate()
+    {
+        RotateUpperBody();
+    }
+
+    private void RotateUpperBody()
+    {
+        if (spine == null || !isBowEquipped) return; 
+
+        Vector3 targetDirection = mainCam.transform.forward;
+
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+        targetRotation *= Quaternion.Euler(spineRotationOffset);
+
+        spine.rotation = targetRotation;
     }
 
     private void Move()
