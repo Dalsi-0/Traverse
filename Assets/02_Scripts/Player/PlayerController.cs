@@ -57,10 +57,7 @@ public class PlayerController : MonoBehaviour
     private float slopeDownForce = 80f;
     private Vector3 spineRotationOffset = new Vector3(0, 85, 0);
     private Vector3 spineRotationOffsetCharging = new Vector3(0, 95, 0);
-
-
     public Transform spine; // 아바타의 상체
-
     public float rotationSpeed = 5f; // 회전 속도 조절
 
     private void Awake()
@@ -107,10 +104,6 @@ public class PlayerController : MonoBehaviour
         capsuleCollider.material = groundPhysicMaterial;
 
         spine = animator.GetBoneTransform(HumanBodyBones.Spine); // 상체 transform 가져오기
-        if (spine == null)
-        {
-            Debug.LogError("Spine Transform을 찾을 수 없습니다!");
-        }
     }
 
     private void OnEnable()
@@ -177,15 +170,27 @@ public class PlayerController : MonoBehaviour
         isSlope = IsOnSlope();
         IsGrounded();
 
-        Vector3 gravity = Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
+
+
+
+      //  Vector3 velocity = isOnSlope ? AdjustDirectionToSlope(Vector3 direction) : direction;
+        Vector3 gravity = isSlope ? Vector3.zero : Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
+
+
+
+      //  Vector3 gravity = Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
         
         Vector3 moveDirection = (cameraForward * smoothDir.y + cameraRight * smoothDir.x).normalized;
 
         if (isGrounded && isSlope)
         {
-            moveDirection = AdjustDirectionToSlope(moveDirection);
-            PlayerRigidbody.AddForce(-slopeHit.normal * slopeDownForce, ForceMode.Force);
+            moveDirection = AdjustDirectionToSlope(moveDirection + gravity);
+            if (!isBowEquipped)
+            {
+                PlayerRigidbody.AddForce(-slopeHit.normal * slopeDownForce, ForceMode.Force);
+            }
         }
+
 
         if (isBowEquipped)
         {
@@ -196,7 +201,6 @@ public class PlayerController : MonoBehaviour
             HandleRegularMovement(moveDirection);
         }
     }
-
     protected Vector3 AdjustDirectionToSlope(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
@@ -232,9 +236,12 @@ public class PlayerController : MonoBehaviour
 
     private void HandleRegularMovement(Vector3 moveDirection)
     {
+        Vector3 horizontalMoveDirection = moveDirection;
+        horizontalMoveDirection.y = 0f;
+
         if (moveDirection.magnitude > 0)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            Quaternion targetRotation = Quaternion.LookRotation(horizontalMoveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
             currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
         }
