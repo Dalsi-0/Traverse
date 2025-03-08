@@ -245,6 +245,7 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat(animIDSpeed, currentVelocity.magnitude / maxSpeed);
     }
 
+    
     private void HandleBowMovement(Vector3 moveDirection)
     {
         Vector3 cameraForward = mainCam.transform.forward;
@@ -343,7 +344,8 @@ public class PlayerController : MonoBehaviour
             {
                 isBowEquipped = false;
                 isCharging = false;
-                animator.ResetTrigger(animIDUnequipBow);
+                animator.SetTrigger(animIDReleaseBow);
+                animator.SetTrigger(animIDUnequipBow);
             }
         }
         else
