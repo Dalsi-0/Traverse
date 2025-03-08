@@ -170,15 +170,7 @@ public class PlayerController : MonoBehaviour
         isSlope = IsOnSlope();
         IsGrounded();
 
-
-
-
-      //  Vector3 velocity = isOnSlope ? AdjustDirectionToSlope(Vector3 direction) : direction;
         Vector3 gravity = isSlope ? Vector3.zero : Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
-
-
-
-      //  Vector3 gravity = Vector3.down * Mathf.Abs(PlayerRigidbody.velocity.y);
         
         Vector3 moveDirection = (cameraForward * smoothDir.y + cameraRight * smoothDir.x).normalized;
 
@@ -206,7 +198,7 @@ public class PlayerController : MonoBehaviour
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
     }
 
-    public void IsGrounded()
+    private void IsGrounded()
     {
         Vector3 boxSize = new Vector3(transform.lossyScale.x*0.5f, 0.2f, transform.lossyScale.z * 0.5f);
         
@@ -215,7 +207,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool(animIDGrounded, isGrounded); 
     }
 
-    public bool IsOnSlope()
+    private bool IsOnSlope()
     {
         Ray ray = new Ray(transform.position, Vector3.down);
         if (Physics.Raycast(ray, out slopeHit, RAY_DISTANCE, groundLayer))
@@ -243,14 +235,22 @@ public class PlayerController : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(horizontalMoveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-            currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
+
+            if (isGrounded)
+            {
+                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
+            }
+            else
+            {
+                currentVelocity = Vector3.Lerp(currentVelocity,( moveDirection * maxSpeed) * 0.65f, acceleration * Time.deltaTime);
+            }
         }
         else
         {
             currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
         }
-
         PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
+
         animator.SetFloat(animIDSpeed, currentVelocity.magnitude / maxSpeed);
     }
 
@@ -263,14 +263,17 @@ public class PlayerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
 
-        if (moveDirection.magnitude > 0)
+        if (isGrounded)
         {
-            float speedModifier = isCharging ? 0.2f : 0.3f;
-            currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
-        }
-        else
-        {
-            currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            if (moveDirection.magnitude > 0)
+            {
+                float speedModifier = isCharging ? 0.2f : 0.3f;
+                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
+            }
+            else
+            {
+                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+            }
         }
 
         PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
@@ -328,7 +331,9 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger(animIDJump);
 
             float jumpPower = isSlope ? jumpForce + slopeDownForce *0.065f : jumpForce;
-            PlayerRigidbody.velocity = new Vector3(PlayerRigidbody.velocity.x, jumpPower, PlayerRigidbody.velocity.z);
+
+            PlayerRigidbody.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+          //  PlayerRigidbody.velocity = new Vector3(0, jumpPower, 0);
             
             if (isBowEquipped)
             {

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class JumpPad : MonoBehaviour
 {
-    public float bounceForce = 10f; // Æ¨±â´Â Èû
+    public float bounceForce = 10f; // íŠ•ê¸°ëŠ” íž˜
 
     PlayerController playerController;
 
@@ -13,12 +13,8 @@ public class JumpPad : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // ÇÃ·¹ÀÌ¾î°¡ Á¡ÇÁ ÁßÀÌ°Å³ª ³«ÇÏ ÁßÀÏ ¶§¸¸ Æ¨°Ü³»±â
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerController.PlayerRigidbody.velocity = Vector3.zero;
-
-            // Á¡ÇÁ´ëÀÇ ÇöÀç "À§ÂÊ ¹æÇâ(transform.up)"À¸·Î ÈûÀ» ÁÜ
             Vector3 bounceDirection = transform.up;
 
             playerController.PlayerRigidbody.AddForce(bounceDirection * bounceForce, ForceMode.Impulse);
