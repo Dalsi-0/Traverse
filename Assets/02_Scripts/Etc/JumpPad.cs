@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class JumpPad : MonoBehaviour
 {
-    public float bounceForce = 10f; // 튕기는 힘
+    public float bounceForce = 10f;
 
     PlayerController playerController;
 
@@ -15,9 +15,7 @@ public class JumpPad : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Vector3 bounceDirection = transform.up;
-
-            playerController.PlayerRigidbody.AddForce(bounceDirection * bounceForce, ForceMode.Impulse);
+           // playerController.PlayerRigidbody.AddForce(transform.up * bounceForce, ForceMode.Impulse);
         }
     }
 }

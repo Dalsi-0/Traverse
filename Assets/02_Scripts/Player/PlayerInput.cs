@@ -68,53 +68,45 @@ public class PlayerInput : MonoBehaviour
         interactAction.Disable();
     }
 
-    // 점프 동작 처리
     void PlayerJump(InputAction.CallbackContext value)
     {
         jumpEvent?.Invoke(); 
     }
 
-    // 이동 처리
     void PlayerMove(InputAction.CallbackContext value)
     {
         dir = value.ReadValue<Vector2>(); 
     }
 
-    // 이동 취소 처리
     void PlayerStop(InputAction.CallbackContext value)
     {
         dir = Vector2.zero;
     }
 
-    // 좌클릭 시작 시 처리
     void PlayerLeftClickStarted(InputAction.CallbackContext value)
     {
         isLeftClickHeld = true; 
         leftClickStartedEvent?.Invoke();
     }
 
-    // 좌클릭 해제 시 처리
     void PlayerLeftClickCanceled(InputAction.CallbackContext value)
     {
         isLeftClickHeld = false; 
         leftClickCanceledEvent?.Invoke(); 
     }
 
-    // 우클릭 시작 시 처리
     void PlayerRightClickStarted(InputAction.CallbackContext value)
     {
         isRightClickHeld = true; 
         rightClickStartedEvent?.Invoke();
     }
 
-    // 우클릭 해제 시 처리
     void PlayerRightClickCanceled(InputAction.CallbackContext value)
     {
         isRightClickHeld = false; 
         rightClickCanceledEvent?.Invoke();
     }
 
-    // 상호작용 처리
     void PlayerInteract(InputAction.CallbackContext value)
     {
         interactEvent?.Invoke(); 

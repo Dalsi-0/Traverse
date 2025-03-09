@@ -14,7 +14,6 @@ public class Player : MonoBehaviour, IDamageable
     public float staminaRegenDelay = 2f;
     private Coroutine staminaRegenCoroutine;
 
-    // 체력 감소
     public void TakeDamage(float amount)
     {
         hp -= amount;
@@ -24,14 +23,12 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    // 체력 회복
     public void Heal(float amount)
     {
         hp += amount;
         if (hp > maxHp) hp = maxHp;
     }
 
-    // 스태미나 소비
     public bool ConsumeStamina(float amount)
     {
         if (stamina < amount)
@@ -52,7 +49,6 @@ public class Player : MonoBehaviour, IDamageable
         return true;
     }
 
-    // 스태미나 회복 코루틴
     private IEnumerator RegenerateStamina()
     {
         yield return new WaitForSeconds(staminaRegenDelay);
@@ -72,16 +68,13 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    // 공격 메서드
     public void Attack()
     {
-        // 공격 로직 (예시: 공격력에 따른 데미지 계산)
         Debug.Log("Attacking with " + attackPower + " damage.");
     }
 
     private void Die()
     {
         Debug.Log("Player has died.");
-        // 플레이어 사망 처리
     }
 }

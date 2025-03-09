@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
     private void UpdateStaminaUI()
     {
         GetUIReferences().StaminaBarObject.SetActive(PlayerManager.Instance.GetPlayerReferences().Player.stamina
-            < PlayerManager.Instance.GetPlayerReferences().Player.maxStamina); // 최대치가 아니면 활성화
+            < PlayerManager.Instance.GetPlayerReferences().Player.maxStamina);
 
         GetUIReferences().StaminaBarImage.fillAmount = PlayerManager.Instance.GetPlayerReferences().Player.stamina
             / PlayerManager.Instance.GetPlayerReferences().Player.maxStamina;

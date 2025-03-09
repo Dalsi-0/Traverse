@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody PlayerRigidbody { get; private set; }
     private Animator animator;
-    private CapsuleCollider capsuleCollider;
+    private CapsuleCollider capsuleColliderController;
+    private CapsuleCollider capsuleColliderModel;
     private Camera mainCam;
 
     private float acceleration = 10f;
@@ -12,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private float maxSpeed = 10f;
     private float jumpForce = 7f;
     private float staminaDrainRate = 10f;
+    private float staminaDrainRateClimb = 2f;
     private Vector3 currentVelocity = Vector3.zero;
     private Vector2 targetDir;
     private Vector2 smoothDir;
@@ -45,26 +48,26 @@ public class PlayerController : MonoBehaviour
     private bool isFalling;
     private bool isSlope;
 
-
-
-
     [SerializeField] Transform groundCheck;
-    [SerializeField] Transform raycastOrigin;
     [SerializeField] private LayerMask groundLayer;
-    private const float RAY_DISTANCE = 2f;
+    private const float RAY_SLOPE_DISTANCE = 2f;
     private RaycastHit slopeHit;
-    private float maxSlopeAngle = 40f; // 경사각도 최대치
+    private float maxSlopeAngle = 40f; 
     private float slopeDownForce = 80f;
     private Vector3 spineRotationOffset = new Vector3(0, 85, 0);
     private Vector3 spineRotationOffsetCharging = new Vector3(0, 95, 0);
-    public Transform spine; // 아바타의 상체
-    public float rotationSpeed = 5f; // 회전 속도 조절
+    public Transform spine;
+    public float rotationSpeed = 5f;
+
 
     private void Awake()
     {
         PlayerRigidbody = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
-        capsuleCollider = transform.GetComponent<CapsuleCollider>();
+        capsuleColliderController = transform.GetComponent<CapsuleCollider>();
+        capsuleColliderModel = transform.GetChild(0).GetComponent<CapsuleCollider>();
+        capsuleColliderController.enabled = true;
+        capsuleColliderModel.enabled = false;
         mainCam = Camera.main;
 
         playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
@@ -101,9 +104,9 @@ public class PlayerController : MonoBehaviour
             bounciness = 0f
         };
 
-        capsuleCollider.material = groundPhysicMaterial;
+        capsuleColliderController.material = groundPhysicMaterial;
 
-        spine = animator.GetBoneTransform(HumanBodyBones.Spine); // 상체 transform 가져오기
+        spine = animator.GetBoneTransform(HumanBodyBones.Spine); 
     }
 
     private void OnEnable()
@@ -126,20 +129,209 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        IsWallDetected();
+
+        if (isClimbing)
+        {
+            DrainStaminaClimb();
+        }
+
         HandleTimeout();
         HandleChargingState();
     }
 
     private void FixedUpdate()
     {
-        Move();
+        if (isClimbing)
+        {
+            ClimbingMove();
+        }
+        else
+        {
+            Move();
+        }
         HandleFalling();
+        Debug.Log(isClimbing);
     }
 
     private void LateUpdate()
     {
-        RotateUpperBody();
+        if (!isClimbing)
+        {
+            RotateUpperBody();
+        }
     }
+
+
+
+    private bool isClimbing = false;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float climbSpeed = 0.5f;
+    private const float RAY_WALL_DISTANCE = .7f;
+
+    private float maxWallAngle = 350f;
+    private RaycastHit wallHit;
+
+
+
+    private void IsWallDetected()
+    {
+        if (!isClimbing && !isGrounded)
+        {
+            if (IsOnWall())
+            {
+                StartClimbing();
+            }
+        }
+        else if (isClimbing)
+        {
+            if (!IsOnWall())
+            {
+                // 끝에 달했으니 모드 종료시키고 점프해라
+                edgeWallJump();
+            }
+        }
+    }
+
+    private void StartClimbing()
+    {
+        capsuleColliderController.enabled = false;
+        capsuleColliderModel.enabled = true;
+
+        isClimbing = true;
+        PlayerRigidbody.useGravity = false; // 중력 제거
+        PlayerRigidbody.velocity = Vector3.zero; // 속도 초기화
+
+        playerInput.jumpEvent -= HandleJump;
+        playerInput.jumpEvent += WallJump;
+
+        animator.SetTrigger("startClimbing"); // 애니메이션 변경
+    }
+    private void StopClimbing()
+    {
+        capsuleColliderController.enabled = true;
+        capsuleColliderModel.enabled = false;
+
+        isClimbing = false;
+        PlayerRigidbody.useGravity = true; // 중력 복원
+
+        transform.GetChild(0).localRotation  = Quaternion.Euler(0, 0, 0);
+
+        playerInput.jumpEvent -= WallJump;
+        playerInput.jumpEvent += HandleJump;
+    }
+
+    private bool IsOnWall()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
+        if (Physics.Raycast(ray, out wallHit, RAY_WALL_DISTANCE, wallLayer))
+        {
+            var angle = Vector3.Angle(transform.forward, wallHit.normal);
+            Debug.Log(angle);
+            return angle != 0f && angle < maxWallAngle;
+        }
+        return false;
+    }
+
+    private void WallJump()
+    {
+        StopClimbing();
+
+        Vector3 jumpDirection = (-transform.forward + Vector3.up).normalized;
+        PlayerRigidbody.velocity = jumpDirection * jumpForce;
+
+        animator.SetTrigger("Jump");
+    }
+
+    private void edgeWallJump()
+    {
+        StopClimbing();
+
+        PlayerRigidbody.velocity = Vector3.up * jumpForce;
+
+        animator.SetTrigger("Jump");
+    }
+
+
+
+
+
+    private void ClimbingMove()
+    {
+        float verticalInput = playerInput.GetMoveDirection().y; 
+        
+        if (verticalInput > 0)
+        {
+            Vector3 climbVelocity = (transform.up * verticalInput).normalized;
+            Vector3 moveDirection = AdjustDirectionToWall(climbVelocity);
+
+            // 벽과의 정렬
+            AlignToWall();
+
+            Vector3 childDirection = new Vector3(-wallHit.normal.x, moveDirection.y+40, -wallHit.normal.z);
+            Quaternion targetRotation = Quaternion.LookRotation(childDirection);  
+            transform.GetChild(0).rotation = Quaternion.Slerp(transform.GetChild(0).rotation, targetRotation, Time.deltaTime * 5f);
+
+            PlayerRigidbody.velocity = new Vector3(0f, moveDirection.y * climbSpeed, 0f);
+            animator.SetFloat(animIDSpeed, verticalInput);
+        }
+        else
+        {
+            WallJump();
+        }
+    }
+    protected Vector3 AdjustDirectionToWall(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, wallHit.normal).normalized;
+    }
+
+    // 벽에 밀착시키는 함수
+    private void AlignToWall()
+    {
+        if (wallHit.collider != null)
+        {
+            // 벽 방향으로 캐릭터를 약간 밀어줌
+            Vector3 targetPosition = wallHit.point + wallHit.normal * 0.1f; // 벽과의 거리를 0.1 유지
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10f);
+        }
+    }
+
+    private void DrainStaminaClimb()
+    {
+        if (!player.ConsumeStamina(staminaDrainRateClimb * Time.deltaTime))
+        {
+            WallJump();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void RotateUpperBody()
     {
@@ -210,7 +402,7 @@ public class PlayerController : MonoBehaviour
     private bool IsOnSlope()
     {
         Ray ray = new Ray(transform.position, Vector3.down);
-        if (Physics.Raycast(ray, out slopeHit, RAY_DISTANCE, groundLayer))
+        if (Physics.Raycast(ray, out slopeHit, RAY_SLOPE_DISTANCE, groundLayer))
         {
             var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle != 0f && angle < maxSlopeAngle;
