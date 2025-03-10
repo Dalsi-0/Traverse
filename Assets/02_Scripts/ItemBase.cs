@@ -50,6 +50,7 @@ public class ItemBase : Interactable
 
     private void GetItem()
     {
+        InventoryManager.Instance.AddItem(ItemSO);
         gameObject.SetActive(false);
     }
 

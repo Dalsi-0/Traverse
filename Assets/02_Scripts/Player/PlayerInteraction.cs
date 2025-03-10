@@ -6,7 +6,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     private Transform cameraTransform;
     private LayerMask interactableLayer; 
-    private float interactDistance = 6f; 
+    private float interactDistance = 7f; 
     private Interactable currentInteractable; // 현재 감지된 상호작용 오브젝트
     private Coroutine interactCheckRoutine;
     public bool isCheckingRaycast;
@@ -27,18 +27,14 @@ public class PlayerInteraction : MonoBehaviour
         while (true)
         {
             RaycastHit[] hits = Physics.RaycastAll(cameraTransform.position, cameraTransform.forward, interactDistance, interactableLayer);
-            bool hitDetected = false; // 첫 번째 박스 콜라이더만 처리하도록 하는 변수
+            bool hitDetected = false; 
 
             foreach (var hit in hits)
             {
-                // 박스 콜라이더일 경우
                 if (hit.collider is BoxCollider)
                 {
-                    // 첫 번째 박스 콜라이더만 처리
                     if (!hitDetected)
                     {
-                        Debug.DrawRay(cameraTransform.position, cameraTransform.forward * interactDistance, Color.red);
-
                         Interactable interactable = hit.collider.GetComponent<Interactable>();
 
                         if (interactable != null)
@@ -55,17 +51,14 @@ public class PlayerInteraction : MonoBehaviour
                             }
                         }
 
-                        hitDetected = true; // 첫 번째 박스 콜라이더를 처리했으므로 더 이상 처리하지 않음
-                        break; // 첫 번째 박스 콜라이더만 찾고 루프 종료
+                        hitDetected = true; 
+                        break; 
                     }
                 }
             }
 
-            // 충돌된 박스 콜라이더가 없을 경우
             if (!hitDetected)
             {
-                Debug.DrawRay(cameraTransform.position, cameraTransform.forward * interactDistance, Color.green);
-
                 if (currentInteractable != null)
                 {
                     currentInteractable.ToggleActiveInfoUI(false);

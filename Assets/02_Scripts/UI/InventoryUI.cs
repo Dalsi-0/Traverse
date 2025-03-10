@@ -38,14 +38,9 @@ public class InventoryUI : MonoBehaviour
     // 아이템 UI를 생성하고 설정하는 함수
     private void CreateItemUI(ItemSO item, int amount)
     {
-        GameObject itemUI = Instantiate(itemUIPrefab, content);
+        ItemUI itemUI = Instantiate(itemUIPrefab, content).transform.GetComponent<ItemUI>();
+        itemUI.SetItemData(item, amount);
 
-      // itemNameText = itemUI.transform.GetChild(1).GetComponent<Text>(); // 아이템 이름
-      // itemDesText = itemUI.transform.GetChild(1).GetComponent<Text>(); // 아이템 이름
-      // itemImage = itemUI.transform.GetChild(0).GetComponent<Image>(); // 아이콘 이미지
-      // itemStackText = itemUI.transform.GetChild(2).GetComponent<Text>(); // 스택 수
-
-        // 스택 수 표시 (스택이 1 이상일 때만 표시)
         if (amount > 1)
         {
             itemStackText.text = amount.ToString() + "개";

@@ -6,7 +6,6 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
-    // 아이템 저장 공간
     private Dictionary<ItemSO, int> dicInventory = new Dictionary<ItemSO, int>();
 
     private void Awake()
@@ -24,21 +23,20 @@ public class InventoryManager : MonoBehaviour
     // 인벤토리에 아이템 추가
     public void AddItem(ItemSO item, int amount = 1)
     {
-        if (item.StackCount > 1) // 스택 가능한 아이템이라면
+        if (item.StackCount > 1)
         {
             if (dicInventory.ContainsKey(item))
             {
                 int currentAmount = dicInventory[item];
-                if (currentAmount + amount <= item.StackCount) // 스택 내에서 추가 가능
+                if (currentAmount + amount <= item.StackCount)
                 {
                     dicInventory[item] += amount;
                 }
                 else
                 {
-                    int remainingAmount = amount - (item.StackCount - currentAmount); // 넘치는 아이템 수
-                    dicInventory[item] = item.StackCount; // 최대 스택 수로 설정
+                    int remainingAmount = amount - (item.StackCount - currentAmount); 
+                    dicInventory[item] = item.StackCount;
 
-                    // 남은 아이템은 새로운 슬롯에 추가
                     AddItem(item, remainingAmount);
                 }
             }
@@ -47,11 +45,11 @@ public class InventoryManager : MonoBehaviour
                 dicInventory[item] = amount;
             }
         }
-        else // 스택 불가능한 아이템이라면 
+        else 
         {
             if (dicInventory.ContainsKey(item))
             {
-                dicInventory[item] += amount; // 그냥 추가
+                dicInventory[item] += amount; 
             }
             else
             {
@@ -59,7 +57,6 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // UI 업데이트 호출
         UIManager.Instance.GetUIReferences().InventoryUI.UpdateInventoryUI();
     }
 
@@ -88,7 +85,6 @@ public class InventoryManager : MonoBehaviour
             return false;
         }
 
-        // UI 업데이트 호출
         UIManager.Instance.GetUIReferences().InventoryUI.UpdateInventoryUI();
     }
 
