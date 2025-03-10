@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        groundLayer = GameManager.Instance.GetGameReferences().GroundLayer;
     }
 
     private void OnEnable()
@@ -95,7 +96,6 @@ public class PlayerController : MonoBehaviour
         mainCam = Camera.main;
 
         playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
-        groundLayer = GameManager.Instance.GetGameReferences().GroundLayer;
         player = PlayerManager.Instance.GetPlayerReferences().Player;
 
         jumpTimeoutDelta = jumpTimeout;
