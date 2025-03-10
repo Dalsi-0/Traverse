@@ -35,7 +35,18 @@ public class Interactable : MonoBehaviour
 
     public virtual void SetInteract()
     {
-        infoUI.SetActive(true);
+        if (infoUI != null)
+        {
+            infoUI.SetActive(true);
+        }
+    }
+
+    public virtual void UnsetInteract()
+    {
+        if (infoUI != null)
+        {
+            infoUI.SetActive(false);
+        }
     }
 
     private IEnumerator LookAtTarget(Transform target)
@@ -71,7 +82,7 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {

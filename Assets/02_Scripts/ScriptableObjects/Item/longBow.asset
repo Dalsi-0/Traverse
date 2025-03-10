@@ -9,11 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19a3071b414a01141ba7dd2d091db8d4, type: 3}
-  m_Name: longBow
+  m_Script: {fileID: 11500000, guid: 9f9772b69f9b0df43bf8c43af05625ad, type: 3}
+  m_Name: LongBow
   m_EditorClassIdentifier: 
   itemName: "\uB871\uBCF4\uC6B0"
   itemType: 1
+  itemRarity: 2
   icon: {fileID: 21300000, guid: cbc65f7ba7b7a6246a33cdebdd5e83d6, type: 3}
   value: 20
-  description: "\uC870\uC7A1\uD574\uBCF4\uC774\uC9C0\uB9CC \uAF64 \uAC15\uD558\uB2E4."
+  description: "\uC81C\uBC95 \uD2BC\uD2BC\uD558\uACE0 \uAC15\uD558\uB2E4"
+  equipmentType: 1

@@ -1,37 +1,43 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-public class MovingPlatform : MonoBehaviour
+public class MovingPlatform : Interactable
 {
-    public Vector3 moveDirection = Vector3.right; // ÀÌµ¿ ¹æÇâ
-    public float moveDistance = 5f; // ÀÌµ¿ °Å¸®
-    public float moveSpeed = 2f; // ÀÌµ¿ ¼Óµµ
+    [SerializeField] private Transform startPosition;
+    [SerializeField] private Transform destinationPosition;
+    public float moveSpeed = 2f; // ì´ë™ ì†ë„
 
-    private Vector3 startPosition;
-
-    private void Start()
+    public override void SetInteract()
     {
-        startPosition = transform.position; // ÃÊ±â À§Ä¡ ÀúÀå
+        //ìƒí˜¸ì‘ìš©í•  í•¨ìˆ˜ë¥¼ ì´ë²¤íŠ¸ì— ë“±ë¡í•˜ê¸°
+
+    }
+
+    private void GetItem()
+    {
+        base.SetInteract();
+
     }
 
     private void FixedUpdate()
     {
-        float pingPongValue = Mathf.PingPong(Time.time * moveSpeed, moveDistance);
-        transform.position = startPosition + moveDirection.normalized * pingPongValue;
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            other.transform.SetParent(transform); // ÇÃ·¹ÀÌ¾î¸¦ ¹ßÆÇÀÇ ÀÚ½ÄÀ¸·Î ¼³Á¤
+            other.transform.SetParent(transform); // í”Œë ˆì´ì–´ë¥¼ ë°œíŒì˜ ìì‹ìœ¼ë¡œ ì„¤ì •
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected override void OnTriggerExit(Collider other)
     {
+        base.OnTriggerExit(other);
+
         if (other.CompareTag("Player"))
         {
-            other.transform.SetParent(null); // ÇÃ·¹ÀÌ¾î¸¦ ´Ù½Ã ¿ø·¡ »óÅÂ·Î º¹±Í
+            other.transform.SetParent(null); // í”Œë ˆì´ì–´ë¥¼ ë‹¤ì‹œ ì›ë˜ ìƒíƒœë¡œ ë³µê·€
         }
     }
 }
