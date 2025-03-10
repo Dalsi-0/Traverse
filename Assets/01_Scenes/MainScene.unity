@@ -1174,6 +1174,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryVirtualCam: {fileID: 854307552}
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &231448753
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,7 +1586,7 @@ MonoBehaviour:
   inventoryUIObject: {fileID: 689797470}
   equipmentButton: {fileID: 865562347}
   equipmentUIObject: {fileID: 231448753}
-  menuCanvas: {fileID: 0}
+  menuCanvas: {fileID: 1749354173}
 --- !u!1 &271919804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1893,7 +1899,7 @@ MonoBehaviour:
   m_BlendUpdateMethod: 0
   m_DefaultBlend:
     m_Style: 1
-    m_Time: 1
+    m_Time: 0.5
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -2069,7 +2075,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360510067}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.02447894, y: 0.934861, z: -0.3480111, w: -0.06575769}
+  m_LocalRotation: {x: -0.024478938, y: 0.93486094, z: -0.34801114, w: -0.065757684}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5456,9 +5462,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundCheck: {fileID: 1636928355}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
   spine: {fileID: 0}
   rotationSpeed: 5
   wallLayer:
@@ -5516,123 +5519,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5997c5a874446540aff11d74e27bf0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveAction:
-    m_Name: Move
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: b5dc763a-e1ec-45d0-920f-ed2e79af72cb
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 2DVector
-      m_Id: 695161cf-28d7-4b8a-849d-49efebad9c2d
-      m_Path: 2DVector
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 4
-    - m_Name: Up
-      m_Id: 805d35ee-9d2f-4d04-9b52-608b7fe8ea0a
-      m_Path: <Keyboard>/w
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: Down
-      m_Id: 1e046f1f-e7ff-4be9-b87a-afc9ddb71ec9
-      m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: Left
-      m_Id: b6b07cee-d76a-4ce5-9867-c42423478443
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: Right
-      m_Id: 68ba1e3b-1ae4-49e1-9463-3b8e37d092ca
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    m_Flags: 0
-  jumpAction:
-    m_Name: Jump
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 2a8496bb-b413-4f54-86f2-e3c401bc7a8d
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 0ad68911-c605-4009-bcb0-e3bf234f0929
-      m_Path: <Keyboard>/space
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Jump
-      m_Flags: 0
-    m_Flags: 0
-  leftClickAction:
-    m_Name: LeftClick
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: ec4842b8-8630-4793-ad12-75577909db1f
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 6af984d2-ca4b-4bce-9993-3157528bd8cd
-      m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: LeftClick
-      m_Flags: 0
-    m_Flags: 0
-  rightClickAction:
-    m_Name: RightClick
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 6656f5bc-1f90-4fcf-8446-a6ad6e8fcf2c
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: ed15107f-513b-471f-969c-07703cbd873f
-      m_Path: <Mouse>/rightButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: RightClick
-      m_Flags: 0
-    m_Flags: 0
-  interactAction:
-    m_Name: Interact
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 2fe2a3a7-2e79-4a9f-af2e-97959414199c
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 3fc23f28-4a05-4947-97f2-7e5345bbb42d
-      m_Path: <Keyboard>/f
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Interact
-      m_Flags: 0
-    m_Flags: 0
 --- !u!1 &1069362854
 GameObject:
   m_ObjectHideFlags: 0

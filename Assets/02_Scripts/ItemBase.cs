@@ -43,15 +43,13 @@ public class ItemBase : Interactable
     }
 
 
-    public override void SetInteract()
+    public override void Interact()
     {
-        //상호작용할 함수를 이벤트에 등록하기 GetItem();
-
+         GetItem();
     }
 
     private void GetItem()
     {
-        base.SetInteract();
         gameObject.SetActive(false);
     }
 

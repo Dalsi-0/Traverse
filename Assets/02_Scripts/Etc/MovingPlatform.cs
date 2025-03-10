@@ -6,20 +6,9 @@ public class MovingPlatform : Interactable
     [SerializeField] private Transform destinationPosition;
     public float moveSpeed = 2f; // 이동 속도
 
-    public override void SetInteract()
+    public override void Interact()
     {
         //상호작용할 함수를 이벤트에 등록하기
-
-    }
-
-    private void GetItem()
-    {
-        base.SetInteract();
-
-    }
-
-    private void FixedUpdate()
-    {
 
     }
 

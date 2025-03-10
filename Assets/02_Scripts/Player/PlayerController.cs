@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour
     private bool isSlope;
 
     [SerializeField] Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
+    private LayerMask groundLayer;
     private const float RAY_SLOPE_DISTANCE = 2f;
     private RaycastHit slopeHit;
     private float maxSlopeAngle = 40f; 
@@ -60,7 +61,30 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 5f;
 
 
-    private void Awake()
+    private void Start()
+    {
+    }
+
+    private void OnEnable()
+    {
+        Init();
+        playerInput.jumpEvent += HandleJump;
+        playerInput.leftClickStartedEvent += StartCharging;
+        playerInput.leftClickCanceledEvent += StopCharging;
+        playerInput.rightClickStartedEvent += EquipBow;
+        playerInput.rightClickCanceledEvent += UnequipBow;
+    }
+
+    private void OnDisable()
+    {
+        playerInput.jumpEvent -= HandleJump;
+        playerInput.rightClickStartedEvent -= EquipBow;
+        playerInput.rightClickCanceledEvent -= UnequipBow;
+        playerInput.leftClickStartedEvent -= StartCharging;
+        playerInput.leftClickCanceledEvent -= StopCharging;
+    }
+
+    private void Init()
     {
         PlayerRigidbody = GetComponent<Rigidbody>();
         animator = transform.GetChild(0).GetComponent<Animator>();
@@ -71,6 +95,7 @@ public class PlayerController : MonoBehaviour
         mainCam = Camera.main;
 
         playerInput = PlayerManager.Instance.GetPlayerReferences().PlayerInput;
+        groundLayer = GameManager.Instance.GetGameReferences().GroundLayer;
         player = PlayerManager.Instance.GetPlayerReferences().Player;
 
         jumpTimeoutDelta = jumpTimeout;
@@ -106,26 +131,9 @@ public class PlayerController : MonoBehaviour
 
         capsuleColliderController.material = groundPhysicMaterial;
 
-        spine = animator.GetBoneTransform(HumanBodyBones.Spine); 
+        spine = animator.GetBoneTransform(HumanBodyBones.Spine);
     }
 
-    private void OnEnable()
-    {
-        playerInput.jumpEvent += HandleJump;
-        playerInput.leftClickStartedEvent += StartCharging;
-        playerInput.leftClickCanceledEvent += StopCharging;
-        playerInput.rightClickStartedEvent += EquipBow;
-        playerInput.rightClickCanceledEvent += UnequipBow;
-    }
-
-    private void OnDisable()
-    {
-        playerInput.jumpEvent -= HandleJump;
-        playerInput.rightClickStartedEvent -= EquipBow;
-        playerInput.rightClickCanceledEvent -= UnequipBow;
-        playerInput.leftClickStartedEvent -= StartCharging;
-        playerInput.leftClickCanceledEvent -= StopCharging;
-    }
 
     private void Update()
     {
@@ -161,8 +169,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
     private bool isClimbing = false;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private float climbSpeed = 0.5f;
@@ -170,8 +176,6 @@ public class PlayerController : MonoBehaviour
 
     private float maxWallAngle = 350f;
     private RaycastHit wallHit;
-
-
 
     private void IsWallDetected()
     {
@@ -250,10 +254,6 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Jump");
     }
 
-
-
-
-
     private void ClimbingMove()
     {
         float verticalInput = playerInput.GetMoveDirection().y; 
@@ -263,7 +263,6 @@ public class PlayerController : MonoBehaviour
             Vector3 climbVelocity = (transform.up * verticalInput).normalized;
             Vector3 moveDirection = AdjustDirectionToWall(climbVelocity);
 
-            // ?嶺????????꿔꺂???影??
             AlignToWall();
 
             Vector3 childDirection = new Vector3(-wallHit.normal.x, moveDirection.y+40, -wallHit.normal.z);
@@ -298,36 +297,6 @@ public class PlayerController : MonoBehaviour
             WallJump();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void RotateUpperBody()
     {
         if (spine == null || !isBowEquipped) return; 

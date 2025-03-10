@@ -47,8 +47,7 @@ public class UIReferences : MonoBehaviour
     public GameObject MenuCanvas { get; private set; }
 
 
-#if UNITY_EDITOR
-    private void OnValidate()
+    private void Awake()
     {
         HealthBarImage = healthBarImage;
         StaminaBarImage = staminaBarImage;
@@ -67,5 +66,4 @@ public class UIReferences : MonoBehaviour
         UIManager manager = GameObject.FindObjectOfType<UIManager>();
         manager.SetUIReferences(this);
     }
-#endif
 }

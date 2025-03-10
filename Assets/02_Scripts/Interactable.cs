@@ -33,20 +33,15 @@ public class Interactable : MonoBehaviour
         }
     }
 
-    public virtual void SetInteract()
+
+    public void ToggleActiveInfoUI(bool isActive)
     {
-        if (infoUI != null)
-        {
-            infoUI.SetActive(true);
-        }
+        infoUI.SetActive(isActive);
     }
 
-    public virtual void UnsetInteract()
+    public virtual void Interact()
     {
-        if (infoUI != null)
-        {
-            infoUI.SetActive(false);
-        }
+
     }
 
     private IEnumerator LookAtTarget(Transform target)
