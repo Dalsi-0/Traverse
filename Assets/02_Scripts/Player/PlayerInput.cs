@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 
@@ -25,6 +25,7 @@ public class PlayerInput : MonoBehaviour
     public bool IsLeftClickHeld() => isLeftClickHeld;
     public bool IsRightClickHeld() => isRightClickHeld;
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
         moveAction = new InputAction("Move", type: InputActionType.Value);
@@ -49,6 +50,7 @@ public class PlayerInput : MonoBehaviour
         rightClickAction.canceled += PlayerRightClickCanceled;
         interactAction.started += PlayerInteract;
     }
+#endif
 
     private void OnEnable()
     {
@@ -110,5 +112,24 @@ public class PlayerInput : MonoBehaviour
     void PlayerInteract(InputAction.CallbackContext value)
     {
         interactEvent?.Invoke(); 
+    }
+
+
+    public void LockInput()
+    {
+        moveAction.Disable();
+        jumpAction.Disable();
+        leftClickAction.Disable();
+        rightClickAction.Disable();
+        interactAction.Disable();
+    }
+
+    public void UnlockInput()
+    {
+        moveAction.Enable();
+        jumpAction.Enable();
+        leftClickAction.Enable();
+        rightClickAction.Enable();
+        interactAction.Enable();
     }
 }

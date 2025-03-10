@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
 {
@@ -30,6 +32,7 @@ public class UIManager : MonoBehaviour
         PlayerManager.Instance.OnStaminaChanged += UpdateStaminaUI;
         PlayerManager.Instance.OnHpHeal += UpdateHpUI;
         PlayerManager.Instance.OnHpDamage += UpdateHpUI;
+        GetUIReferences().MenuCanvas.SetActive(false);
         SetButtonListener();
     }
 
@@ -48,6 +51,7 @@ public class UIManager : MonoBehaviour
             / PlayerManager.Instance.GetPlayerReferences().Player.maxHp;
     }
 
+
     public void ToggleInventoryUI()
     {
         GetUIReferences().InventoryUIObject.SetActive(true);
@@ -59,14 +63,14 @@ public class UIManager : MonoBehaviour
         GetUIReferences().InventoryUIObject.SetActive(false);
     }
 
-    public void SetUIReferences(UIReferences uiReferences)
-    {
-        this.UIReferences = uiReferences;
-    }
 
     private void SetButtonListener()
     {
         GetUIReferences().InventoryButton.onClick.AddListener(ToggleInventoryUI);
         GetUIReferences().EquipmentButton.onClick.AddListener(ToggleEquipmentUI);
+    }
+    public void SetUIReferences(UIReferences uiReferences)
+    {
+        this.UIReferences = uiReferences;
     }
 }

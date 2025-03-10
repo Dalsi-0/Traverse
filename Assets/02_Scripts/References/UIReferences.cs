@@ -40,6 +40,13 @@ public class UIReferences : MonoBehaviour
     public GameObject EquipmentUIObject { get; private set; }
 
 
+
+    [Header("Etc UI")]
+
+    [SerializeField] private GameObject menuCanvas;
+    public GameObject MenuCanvas { get; private set; }
+
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -54,6 +61,8 @@ public class UIReferences : MonoBehaviour
         // EquipmentUI = EquipmentUI;
         EquipmentButton = equipmentButton;
         EquipmentUIObject = equipmentUIObject;
+
+        MenuCanvas = menuCanvas;
 
         UIManager manager = GameObject.FindObjectOfType<UIManager>();
         manager.SetUIReferences(this);

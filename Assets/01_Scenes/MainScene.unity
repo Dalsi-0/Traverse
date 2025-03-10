@@ -1129,6 +1129,51 @@ Transform:
   - {fileID: 801971479}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &208052466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 208052467}
+  - component: {fileID: 208052468}
+  m_Layer: 0
+  m_Name: GameReferences
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &208052467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208052466}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1437020163}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &208052468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208052466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 256012c5f5f083d4ba5366c6609ee1bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryVirtualCam: {fileID: 854307552}
 --- !u!1 &231448753
 GameObject:
   m_ObjectHideFlags: 0
@@ -1530,11 +1575,12 @@ MonoBehaviour:
   healthBarImage: {fileID: 483888600}
   staminaBarImage: {fileID: 1309134511}
   staminaBarObject: {fileID: 1338320193}
-  inventoryUIObject: {fileID: 689797470}
-  equipmentUIObject: {fileID: 231448753}
   inventoryUI: {fileID: 918390634}
   inventoryButton: {fileID: 1026445688}
+  inventoryUIObject: {fileID: 689797470}
   equipmentButton: {fileID: 865562347}
+  equipmentUIObject: {fileID: 231448753}
+  menuCanvas: {fileID: 0}
 --- !u!1 &271919804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,7 +1681,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 298337077}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.026851434, y: 0.92160255, z: -0.3817402, w: -0.0648251}
+  m_LocalRotation: {x: -0.026851427, y: 0.9216025, z: -0.38174024, w: -0.064825095}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1847,7 +1893,7 @@ MonoBehaviour:
   m_BlendUpdateMethod: 0
   m_DefaultBlend:
     m_Style: 1
-    m_Time: 2
+    m_Time: 1
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -2023,7 +2069,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360510067}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.024478938, y: 0.93486094, z: -0.34801114, w: -0.065757684}
+  m_LocalRotation: {x: -0.02447894, y: 0.934861, z: -0.3480111, w: -0.06575769}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3778,7 +3824,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 10
+  m_Priority: 15
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
@@ -5149,7 +5195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.54509807}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5474,12 +5520,12 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 6a03f0d2-e2f7-4977-980a-1283f22046a6
+    m_Id: b5dc763a-e1ec-45d0-920f-ed2e79af72cb
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2DVector
-      m_Id: e2179e63-73b4-4738-a4de-f3d390f42027
+      m_Id: 695161cf-28d7-4b8a-849d-49efebad9c2d
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -5487,7 +5533,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: Up
-      m_Id: 4cebd195-4bab-4e2c-a727-b776da63845f
+      m_Id: 805d35ee-9d2f-4d04-9b52-608b7fe8ea0a
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -5495,7 +5541,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Down
-      m_Id: ffff916e-ad81-4187-aa6b-9aa9681ee0c2
+      m_Id: 1e046f1f-e7ff-4be9-b87a-afc9ddb71ec9
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -5503,7 +5549,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Left
-      m_Id: 5df2450c-fce1-4808-85dd-df9308a3eb44
+      m_Id: b6b07cee-d76a-4ce5-9867-c42423478443
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -5511,7 +5557,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: Right
-      m_Id: 0744afbd-a1fe-4b94-ba33-9da32d82cb48
+      m_Id: 68ba1e3b-1ae4-49e1-9463-3b8e37d092ca
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -5523,12 +5569,12 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 2926e00e-8f8a-4b04-b3b0-ec6a08ca3802
+    m_Id: 2a8496bb-b413-4f54-86f2-e3c401bc7a8d
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 3fd63443-1355-4121-a6da-1d7d86f25fee
+      m_Id: 0ad68911-c605-4009-bcb0-e3bf234f0929
       m_Path: <Keyboard>/space
       m_Interactions: 
       m_Processors: 
@@ -5540,12 +5586,12 @@ MonoBehaviour:
     m_Name: LeftClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 44aa31db-0bbf-45d6-b3b9-cbb65ce0d3aa
+    m_Id: ec4842b8-8630-4793-ad12-75577909db1f
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 7afc1cbd-9586-408b-9bf5-5420d1a15160
+      m_Id: 6af984d2-ca4b-4bce-9993-3157528bd8cd
       m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
@@ -5557,12 +5603,12 @@ MonoBehaviour:
     m_Name: RightClick
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 8d2f983a-7281-4d2e-915b-2c652edb7ad0
+    m_Id: 6656f5bc-1f90-4fcf-8446-a6ad6e8fcf2c
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 8509c808-717f-4e01-a932-55870f4123a8
+      m_Id: ed15107f-513b-471f-969c-07703cbd873f
       m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
@@ -5574,12 +5620,12 @@ MonoBehaviour:
     m_Name: Interact
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: d1ba8312-7f87-46de-80af-1cd20c9ec445
+    m_Id: 2fe2a3a7-2e79-4a9f-af2e-97959414199c
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: f6392214-71c9-4c34-bbb9-caf39ca0f9f9
+      m_Id: 3fc23f28-4a05-4947-97f2-7e5345bbb42d
       m_Path: <Keyboard>/f
       m_Interactions: 
       m_Processors: 
@@ -7512,7 +7558,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 208052467}
   m_Father: {fileID: 630415634}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1437020164
@@ -8887,7 +8934,7 @@ GameObject:
   - component: {fileID: 1749354176}
   - component: {fileID: 1749354175}
   m_Layer: 5
-  m_Name: MainCanvas
+  m_Name: MenuCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
