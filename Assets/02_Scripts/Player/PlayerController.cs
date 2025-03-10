@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
@@ -151,7 +151,6 @@ public class PlayerController : MonoBehaviour
             Move();
         }
         HandleFalling();
-        Debug.Log(isClimbing);
     }
 
     private void LateUpdate()
@@ -187,7 +186,6 @@ public class PlayerController : MonoBehaviour
         {
             if (!IsOnWall())
             {
-                // 끝에 달했으니 모드 종료시키고 점프해라
                 edgeWallJump();
             }
         }
@@ -199,13 +197,13 @@ public class PlayerController : MonoBehaviour
         capsuleColliderModel.enabled = true;
 
         isClimbing = true;
-        PlayerRigidbody.useGravity = false; // 중력 제거
-        PlayerRigidbody.velocity = Vector3.zero; // 속도 초기화
+        PlayerRigidbody.useGravity = false; 
+        PlayerRigidbody.velocity = Vector3.zero; 
 
         playerInput.jumpEvent -= HandleJump;
         playerInput.jumpEvent += WallJump;
 
-        animator.SetTrigger("startClimbing"); // 애니메이션 변경
+        animator.SetTrigger("startClimbing");
     }
     private void StopClimbing()
     {
@@ -213,7 +211,7 @@ public class PlayerController : MonoBehaviour
         capsuleColliderModel.enabled = false;
 
         isClimbing = false;
-        PlayerRigidbody.useGravity = true; // 중력 복원
+        PlayerRigidbody.useGravity = true; 
 
         transform.GetChild(0).localRotation  = Quaternion.Euler(0, 0, 0);
 
@@ -265,7 +263,7 @@ public class PlayerController : MonoBehaviour
             Vector3 climbVelocity = (transform.up * verticalInput).normalized;
             Vector3 moveDirection = AdjustDirectionToWall(climbVelocity);
 
-            // 벽과의 정렬
+            // ?嶺????????꿔꺂???影??
             AlignToWall();
 
             Vector3 childDirection = new Vector3(-wallHit.normal.x, moveDirection.y+40, -wallHit.normal.z);
@@ -284,14 +282,11 @@ public class PlayerController : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(direction, wallHit.normal).normalized;
     }
-
-    // 벽에 밀착시키는 함수
     private void AlignToWall()
     {
         if (wallHit.collider != null)
         {
-            // 벽 방향으로 캐릭터를 약간 밀어줌
-            Vector3 targetPosition = wallHit.point + wallHit.normal * 0.1f; // 벽과의 거리를 0.1 유지
+            Vector3 targetPosition = wallHit.point + wallHit.normal * 0.1f; 
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10f);
         }
     }

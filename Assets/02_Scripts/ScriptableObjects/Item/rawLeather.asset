@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a3071b414a01141ba7dd2d091db8d4, type: 3}
+  m_Name: rawLeather
+  m_EditorClassIdentifier: 
+  itemName: "\uAC00\uC8FD"
+  itemType: 0
+  icon: {fileID: 21300000, guid: 54f6b010e52ff62429e5caf1e29b5089, type: 3}
+  value: 0
+  description: "\uB3D9\uBB3C\uC758 \uAC00\uC8FD\uC774\uB2E4. \uC5EC\uB85C\uBAA8\uB85C
+    \uC4F8\uBAA8 \uC788\uC5B4\uBCF4\uC778\uB2E4."

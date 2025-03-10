@@ -15,7 +15,7 @@ public class JumpPad : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-           // playerController.PlayerRigidbody.AddForce(transform.up * bounceForce, ForceMode.Impulse);
+            playerController.PlayerRigidbody.AddForce(transform.up * bounceForce, ForceMode.Impulse);
         }
     }
 }

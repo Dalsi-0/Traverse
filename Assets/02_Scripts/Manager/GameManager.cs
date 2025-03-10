@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            LockCursor();
         }
         else
         {
@@ -22,12 +21,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        
+        GameStart();
     }
 
     private void Update()
     {
 
+    }
+
+
+    public void GameStart()
+    {
+        LockCursor();
     }
 
     private void LockCursor()
