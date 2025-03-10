@@ -48,10 +48,10 @@ public class Interactable : MonoBehaviour
     {
         while (true)
         {
-            Vector3 direction = cameraTransform.position - transform.position; 
-            direction.y = 0; 
+            Vector3 direction = cameraTransform.position - worldCanvas.transform.position; 
+            direction.y = 0;
 
-            transform.rotation = Quaternion.LookRotation(direction);
+            worldCanvas.transform.rotation = Quaternion.LookRotation(direction);
             yield return null; 
         }
     }
