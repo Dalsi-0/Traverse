@@ -74,6 +74,12 @@ public class Interactable : MonoBehaviour
             {
                 infoCollider.enabled = true;
             }
+
+            if (!PlayerManager.Instance.GetPlayerReferences().PlayerInteraction.isCheckingRaycast)
+            {
+                PlayerManager.Instance.GetPlayerReferences().PlayerInteraction.isCheckingRaycast = true;
+                PlayerManager.Instance.GetPlayerReferences().PlayerInteraction.StartInteractCheck();
+            }
         }
     }
 
@@ -100,6 +106,12 @@ public class Interactable : MonoBehaviour
             if (infoCollider != null)
             {
                 infoCollider.enabled = false;
+            }
+
+            if (PlayerManager.Instance.GetPlayerReferences().PlayerInteraction.isCheckingRaycast)
+            {
+                PlayerManager.Instance.GetPlayerReferences().PlayerInteraction.isCheckingRaycast = false;
+                PlayerManager.Instance.GetPlayerReferences().PlayerInteraction.StopInteractCheck();
             }
         }
     }
