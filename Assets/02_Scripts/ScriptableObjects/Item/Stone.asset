@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uB3CC\uBA69\uC774"
   itemType: 0
+  itemRarity: 0
   icon: {fileID: 21300000, guid: 57e77ff0ff9cb3f4faebc3a728a3140f, type: 3}
   value: 0
+  stackCount: 10
   description: "\uAD74\uB7EC\uB2E4\uB2C8\uB294 \uC9F1\uB3CC"
   materialType: 2

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
@@ -6,7 +6,6 @@ public class UIManager : MonoBehaviour
 
     private UIReferences UIReferences;
     public UIReferences GetUIReferences() => UIReferences;
-
 
 
     private void Awake()
@@ -23,9 +22,15 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        Init();
+    }
+
+    private void Init()
+    {
         PlayerManager.Instance.OnStaminaChanged += UpdateStaminaUI;
         PlayerManager.Instance.OnHpHeal += UpdateHpUI;
         PlayerManager.Instance.OnHpDamage += UpdateHpUI;
+        SetButtonListener();
     }
 
     private void UpdateStaminaUI()
@@ -43,9 +48,25 @@ public class UIManager : MonoBehaviour
             / PlayerManager.Instance.GetPlayerReferences().Player.maxHp;
     }
 
+    public void ToggleInventoryUI()
+    {
+        GetUIReferences().InventoryUIObject.SetActive(true);
+        GetUIReferences().EquipmentUIObject.SetActive(false);
+    }
+    public void ToggleEquipmentUI()
+    {
+        GetUIReferences().EquipmentUIObject.SetActive(true);
+        GetUIReferences().InventoryUIObject.SetActive(false);
+    }
 
     public void SetUIReferences(UIReferences uiReferences)
     {
         this.UIReferences = uiReferences;
+    }
+
+    private void SetButtonListener()
+    {
+        GetUIReferences().InventoryButton.onClick.AddListener(ToggleInventoryUI);
+        GetUIReferences().EquipmentButton.onClick.AddListener(ToggleEquipmentUI);
     }
 }

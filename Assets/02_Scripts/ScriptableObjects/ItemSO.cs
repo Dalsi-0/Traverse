@@ -8,6 +8,7 @@ public class ItemSO : ScriptableObject
     [SerializeField] private ITEM_RARITY itemRarity;
     [SerializeField] private Sprite icon;
     [SerializeField] private int value;
+    [SerializeField] private int stackCount;
     [TextArea]
     [SerializeField] private string description; 
 
@@ -16,5 +17,6 @@ public class ItemSO : ScriptableObject
     public ITEM_RARITY ItemRarity => itemRarity;
     public Sprite Icon => icon;
     public int Value => value;
+    public int StackCount => stackCount;
     public string Description => description;
 }

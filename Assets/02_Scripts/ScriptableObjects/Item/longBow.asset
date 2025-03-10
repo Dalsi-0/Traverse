@@ -17,5 +17,6 @@ MonoBehaviour:
   itemRarity: 2
   icon: {fileID: 21300000, guid: cbc65f7ba7b7a6246a33cdebdd5e83d6, type: 3}
   value: 20
+  stackCount: 1
   description: "\uC81C\uBC95 \uD2BC\uD2BC\uD558\uACE0 \uAC15\uD558\uB2E4"
   equipmentType: 1
