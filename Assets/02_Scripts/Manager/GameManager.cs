@@ -24,14 +24,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     private void Start()
     {
-        GameStart();
+        PlayerManager.Instance.GetPlayerReferences().PlayerController.PlayerRigidbody.isKinematic = true;
+        GetGameReferences().StandbyVirtualCam.SetActive(true);
     }
+
 
     public void GameStart()
     {
+        GetGameReferences().StandbyVirtualCam.SetActive(false);
+        PlayerManager.Instance.GetPlayerReferences().PlayerController.PlayerRigidbody.isKinematic = false;
+        PlayerManager.Instance.GetPlayerReferences().PlayerController.EndStandby();
+        PlayerManager.Instance.GetPlayerReferences().PlayerInput.LockCursor();
     }
 
 

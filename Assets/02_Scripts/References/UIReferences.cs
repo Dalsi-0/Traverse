@@ -46,6 +46,18 @@ public class UIReferences : MonoBehaviour
     [SerializeField] private GameObject menuCanvas;
     public GameObject MenuCanvas { get; private set; }
 
+    
+    [Header("Standby UI")]
+
+    [SerializeField] private GameObject standbyCanvas;
+    public GameObject StandbyCanvas { get; private set; }
+
+    [SerializeField] private Button gameStartButton;
+    public Button GameStartButton { get; private set; }
+
+    [SerializeField] private Button gameExitButton;
+    public Button GameExitButton { get; private set; }
+
 
     private void Awake()
     {
@@ -62,6 +74,10 @@ public class UIReferences : MonoBehaviour
         EquipmentUIObject = equipmentUIObject;
 
         MenuCanvas = menuCanvas;
+
+        StandbyCanvas = standbyCanvas;
+        GameStartButton = gameStartButton;
+        GameExitButton = gameExitButton;
 
         UIManager manager = GameObject.FindObjectOfType<UIManager>();
         manager.SetUIReferences(this);

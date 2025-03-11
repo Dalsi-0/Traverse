@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
         SetButtonListener();
     }
 
+
     private void UpdateStaminaUI()
     {
         GetUIReferences().StaminaBarObject.SetActive(PlayerManager.Instance.GetPlayerReferences().Player.stamina
@@ -51,21 +52,32 @@ public class UIManager : MonoBehaviour
             / PlayerManager.Instance.GetPlayerReferences().Player.maxHp;
     }
 
-
     public void ToggleInventoryUI()
     {
         GetUIReferences().InventoryUIObject.SetActive(true);
         GetUIReferences().EquipmentUIObject.SetActive(false);
     }
+
     public void ToggleEquipmentUI()
     {
         GetUIReferences().EquipmentUIObject.SetActive(true);
         GetUIReferences().InventoryUIObject.SetActive(false);
     }
 
+    private void EndStandby()
+    {
+        GetUIReferences().StandbyCanvas.SetActive(false);
+        GameManager.Instance.GameStart();
+    }
+    private void EndGame()
+    {
+        Application.Quit();
+    }
 
     private void SetButtonListener()
     {
+        GetUIReferences().GameStartButton.onClick.AddListener(EndStandby);
+        GetUIReferences().GameExitButton.onClick.AddListener(EndGame);
         GetUIReferences().InventoryButton.onClick.AddListener(ToggleInventoryUI);
         GetUIReferences().EquipmentButton.onClick.AddListener(ToggleEquipmentUI);
     }

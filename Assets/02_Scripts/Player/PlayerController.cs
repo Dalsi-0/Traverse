@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private int animIDReleaseBow;
     private int animIDEquipBow;
     private int animIDUnequipBow;
+    private int animIDStandby;
 
     private PhysicMaterial fallPhysicMaterial;
     private PhysicMaterial groundPhysicMaterial;
@@ -61,6 +62,14 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 5f;
 
 
+
+    private bool isClimbing = false;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float climbSpeed = 0.5f;
+    private const float RAY_WALL_DISTANCE = .7f;
+
+    private float maxWallAngle = 350f;
+    private RaycastHit wallHit;
     private void Start()
     {
         groundLayer = GameManager.Instance.GetGameReferences().GroundLayer;
@@ -111,6 +120,7 @@ public class PlayerController : MonoBehaviour
         animIDReleaseBow = Animator.StringToHash("ReleaseBow");
         animIDEquipBow = Animator.StringToHash("EquipBow");
         animIDUnequipBow = Animator.StringToHash("UnequipBow");
+        animIDStandby = Animator.StringToHash("Standby");
 
         groundPhysicMaterial = new PhysicMaterial
         {
@@ -168,14 +178,6 @@ public class PlayerController : MonoBehaviour
             RotateUpperBody();
         }
     }
-
-    private bool isClimbing = false;
-    [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private float climbSpeed = 0.5f;
-    private const float RAY_WALL_DISTANCE = .7f;
-
-    private float maxWallAngle = 350f;
-    private RaycastHit wallHit;
 
     private void IsWallDetected()
     {
@@ -570,4 +572,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void EndStandby()
+    {
+        animator.SetTrigger(animIDStandby);
+    }
 }

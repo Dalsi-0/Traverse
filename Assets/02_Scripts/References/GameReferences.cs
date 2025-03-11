@@ -8,6 +8,9 @@ public class GameReferences : MonoBehaviour
     [SerializeField] private GameObject inventoryVirtualCam;
     public GameObject InventoryVirtualCam { get; private set; }
 
+    [SerializeField] private GameObject standbyVirtualCam;
+    public GameObject StandbyVirtualCam { get; private set; }
+
     [SerializeField] private LayerMask interactableLayer;
     public LayerMask InteractableLayer { get; private set; }
 
@@ -18,6 +21,7 @@ public class GameReferences : MonoBehaviour
     private void Awake()
     {
         InventoryVirtualCam = inventoryVirtualCam;
+        StandbyVirtualCam = standbyVirtualCam;
         InteractableLayer = interactableLayer;
         GroundLayer = groundLayer;
 
