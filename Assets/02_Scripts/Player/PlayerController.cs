@@ -230,7 +230,6 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(ray, out wallHit, RAY_WALL_DISTANCE, wallLayer))
         {
             var angle = Vector3.Angle(transform.forward, wallHit.normal);
-            Debug.Log(angle);
             return angle != 0f && angle < maxWallAngle;
         }
         return false;
