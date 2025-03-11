@@ -37,7 +37,6 @@ public class UIManager : MonoBehaviour
         SetButtonListener();
     }
 
-
     private void UpdateStaminaUI()
     {
         GetUIReferences().StaminaBarObject.SetActive(PlayerManager.Instance.GetPlayerReferences().Player.stamina
@@ -57,6 +56,14 @@ public class UIManager : MonoBehaviour
     {
         GetUIReferences().InventoryUIObject.SetActive(true);
         GetUIReferences().EquipmentUIObject.SetActive(false);
+    }
+
+    public void ResetInventoryDetailUI()
+    {
+        GetUIReferences().InventorySelectItemImage.sprite = GetUIReferences().InventorySelectItemNULLImage;
+        GetUIReferences().InventorySelectItemName.text = "";
+        GetUIReferences().InventorySelectItemDes.text = "";
+        GetUIReferences().InventorySelectItemStack.text = "";
     }
 
     public void ToggleEquipmentUI()

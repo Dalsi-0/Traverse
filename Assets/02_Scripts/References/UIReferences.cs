@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,22 @@ public class UIReferences : MonoBehaviour
 
     [SerializeField] private GameObject inventoryUIObject;
     public GameObject InventoryUIObject { get; private set; }
+
+
+    [SerializeField] private Sprite inventorySelectItemNULLImage;
+    public Sprite InventorySelectItemNULLImage { get; private set; }
+
+    [SerializeField] private Image inventorySelectItemImage;
+    public Image InventorySelectItemImage { get; private set; }
+
+    [SerializeField] private TextMeshProUGUI inventorySelectItemName;
+    public TextMeshProUGUI InventorySelectItemName { get; private set; }
+
+    [SerializeField] private TextMeshProUGUI inventorySelectItemDes;
+    public TextMeshProUGUI InventorySelectItemDes { get; private set; }
+
+    [SerializeField] private TextMeshProUGUI inventorySelectItemStack;
+    public TextMeshProUGUI InventorySelectItemStack { get; private set; }
 
 
 
@@ -71,6 +88,11 @@ public class UIReferences : MonoBehaviour
         InventoryUI = inventoryUI;
         InventoryButton = inventoryButton;
         InventoryUIObject = inventoryUIObject;
+        InventorySelectItemNULLImage = inventorySelectItemNULLImage;
+        InventorySelectItemImage = inventorySelectItemImage;
+        InventorySelectItemName = inventorySelectItemName;
+        InventorySelectItemDes = inventorySelectItemDes;
+        InventorySelectItemStack = inventorySelectItemStack;
 
         // EquipmentUI = EquipmentUI;
         EquipmentButton = equipmentButton;

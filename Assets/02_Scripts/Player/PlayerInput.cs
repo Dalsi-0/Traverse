@@ -142,11 +142,15 @@ public class PlayerInput : MonoBehaviour
 
         if (isMenuActive)
         {
+            UIManager.Instance.GetUIReferences().HUDCanvas.SetActive(true);
             LockCursor();
             StartCoroutine(WaitForInputToResume());
         }
         else
         {
+            UIManager.Instance.GetUIReferences().HUDCanvas.SetActive(false);
+            // 인벤토리의 아래 정보 초기화
+            UIManager.Instance.ResetInventoryDetailUI();
             UnlockCursor();
             PlayerManager.Instance.GetPlayerReferences().PlayerInput.LockInput();
         }

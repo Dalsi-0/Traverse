@@ -2800,6 +2800,12 @@ MonoBehaviour:
   inventoryUI: {fileID: 918390634}
   inventoryButton: {fileID: 1026445688}
   inventoryUIObject: {fileID: 689797470}
+  inventorySelectItemNULLImage: {fileID: 10917, guid: 0000000000000000f000000000000000,
+    type: 0}
+  inventorySelectItemImage: {fileID: 1033223894}
+  inventorySelectItemName: {fileID: 689677723}
+  inventorySelectItemDes: {fileID: 1173273313}
+  inventorySelectItemStack: {fileID: 1452643380}
   equipmentButton: {fileID: 865562347}
   equipmentUIObject: {fileID: 231448753}
   menuCanvas: {fileID: 1749354173}
