@@ -29,6 +29,7 @@ public class UIManager : MonoBehaviour
 
     private void Init()
     {
+        GetUIReferences().HUDCanvas.SetActive(false);
         PlayerManager.Instance.OnStaminaChanged += UpdateStaminaUI;
         PlayerManager.Instance.OnHpHeal += UpdateHpUI;
         PlayerManager.Instance.OnHpDamage += UpdateHpUI;

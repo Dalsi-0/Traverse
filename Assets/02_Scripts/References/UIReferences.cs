@@ -46,7 +46,10 @@ public class UIReferences : MonoBehaviour
     [SerializeField] private GameObject menuCanvas;
     public GameObject MenuCanvas { get; private set; }
 
-    
+    [SerializeField] private GameObject hudCanvas;
+    public GameObject HUDCanvas { get; private set; }
+
+
     [Header("Standby UI")]
 
     [SerializeField] private GameObject standbyCanvas;
@@ -74,6 +77,7 @@ public class UIReferences : MonoBehaviour
         EquipmentUIObject = equipmentUIObject;
 
         MenuCanvas = menuCanvas;
+        HUDCanvas = hudCanvas;
 
         StandbyCanvas = standbyCanvas;
         GameStartButton = gameStartButton;

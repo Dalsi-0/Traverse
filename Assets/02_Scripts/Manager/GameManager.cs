@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     public void GameStart()
     {
         GetGameReferences().StandbyVirtualCam.SetActive(false);
+        UIManager.Instance.GetUIReferences().HUDCanvas.SetActive(true);
         PlayerManager.Instance.GetPlayerReferences().PlayerController.PlayerRigidbody.isKinematic = false;
         PlayerManager.Instance.GetPlayerReferences().PlayerController.EndStandby();
         PlayerManager.Instance.GetPlayerReferences().PlayerInput.LockCursor();
