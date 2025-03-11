@@ -1121,7 +1121,7 @@ GameObject:
   - component: {fileID: 2435842331212751888}
   - component: {fileID: 3194311179584925437}
   m_Layer: 7
-  m_Name: ATKPotion
+  m_Name: SpeedPotion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
