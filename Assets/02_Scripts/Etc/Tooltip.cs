@@ -7,7 +7,7 @@ public class Tooltip : MonoBehaviour
 {
     [SerializeField] private GameObject worldUI; 
     private LayerMask playerLayer;
-    private float checkInterval = 0.2f;
+    private float checkInterval = 0.05f;
 
     private void Start()
     {
