@@ -45,6 +45,10 @@ public class UIReferences : MonoBehaviour
     public TextMeshProUGUI InventorySelectItemStack { get; private set; }
 
 
+    [SerializeField] private Button inventorySelectItemUseButton;
+    public Button InventorySelectItemUseButton { get; private set; }
+
+
 
     [Header("Equipment UI")]
     //   [SerializeField] private EquipmentUI EquipmentUI;
@@ -93,6 +97,7 @@ public class UIReferences : MonoBehaviour
         InventorySelectItemName = inventorySelectItemName;
         InventorySelectItemDes = inventorySelectItemDes;
         InventorySelectItemStack = inventorySelectItemStack;
+        InventorySelectItemUseButton = inventorySelectItemUseButton;
 
         // EquipmentUI = EquipmentUI;
         EquipmentButton = equipmentButton;

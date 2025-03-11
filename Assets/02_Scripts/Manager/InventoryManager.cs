@@ -1,12 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public class InventorySlot
+{
+    public ItemSO item;  
+    public int count;    
+
+    public InventorySlot(ItemSO item, int count)
+    {
+        this.item = item;
+        this.count = count;
+    }
+}
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
-    private Dictionary<ItemSO, int> dicInventory = new Dictionary<ItemSO, int>();
+    private List<InventorySlot> inventorySlots = new List<InventorySlot>();
 
     private void Awake()
     {
@@ -23,37 +34,22 @@ public class InventoryManager : MonoBehaviour
     // 인벤토리에 아이템 추가
     public void AddItem(ItemSO item, int amount = 1)
     {
-        if (item.StackCount > 1)
+        while (amount > 0)
         {
-            if (dicInventory.ContainsKey(item))
-            {
-                int currentAmount = dicInventory[item];
-                if (currentAmount + amount <= item.StackCount)
-                {
-                    dicInventory[item] += amount;
-                }
-                else
-                {
-                    int remainingAmount = amount - (item.StackCount - currentAmount); 
-                    dicInventory[item] = item.StackCount;
+            InventorySlot slot = inventorySlots.Find(s => s.item == item && s.count < item.StackCount);
 
-                    AddItem(item, remainingAmount);
-                }
+            if (slot != null)
+            {
+                int spaceLeft = item.StackCount - slot.count;
+                int addAmount = Mathf.Min(amount, spaceLeft);
+                slot.count += addAmount;
+                amount -= addAmount;
             }
             else
             {
-                dicInventory[item] = amount;
-            }
-        }
-        else 
-        {
-            if (dicInventory.ContainsKey(item))
-            {
-                dicInventory[item] += amount; 
-            }
-            else
-            {
-                dicInventory[item] = amount;
+                int addAmount = Mathf.Min(amount, item.StackCount);
+                inventorySlots.Add(new InventorySlot(item, addAmount));
+                amount -= addAmount;
             }
         }
 
@@ -64,50 +60,35 @@ public class InventoryManager : MonoBehaviour
     // 아이템 제거
     public bool RemoveItem(ItemSO item, int amount = 1)
     {
-        if (dicInventory.ContainsKey(item))
+        for (int i = 0; i < inventorySlots.Count; i++)
         {
-            if (dicInventory[item] >= amount)
+            if (inventorySlots[i].item == item)
             {
-                dicInventory[item] -= amount;
-
-                if (dicInventory[item] <= 0)
-                    dicInventory.Remove(item);
-
-                return true;
+                if (inventorySlots[i].count >= amount)
+                {
+                    inventorySlots[i].count -= amount;
+                    if (inventorySlots[i].count == 0)
+                    {
+                        inventorySlots.RemoveAt(i);
+                    }
+                    UIManager.Instance.GetUIReferences().InventoryUI.UpdateInventoryUI();
+                    return true;
+                }
+                else
+                {
+                    amount -= inventorySlots[i].count;
+                    inventorySlots.RemoveAt(i);
+                    i--;
+                }
             }
-            else
-            {
-                return false;
-            }
         }
-        else
-        {
-            return false;
-        }
-
-        UIManager.Instance.GetUIReferences().InventoryUI.UpdateInventoryUI();
+        return false;
     }
 
 
-    // 아이템 개수 확인
-    public int GetItemCount(ItemSO item)
+    // 인벤토리 슬롯 리스트 반환
+    public List<InventorySlot> GetInventoryItems()
     {
-        return dicInventory.ContainsKey(item) ? dicInventory[item] : 0;
+        return inventorySlots;
     }
-
-    public void PrintInventory()
-    {
-        Debug.Log("현재 인벤토리 목록:");
-        foreach (var item in dicInventory)
-        {
-            Debug.Log($"{item.Key.ItemName}: {item.Value}개");
-        }
-    }
-
-    // 인벤토리에 있는 아이템들을 가져오는 함수
-    public Dictionary<ItemSO, int> GetInventoryItems()
-    {
-        return dicInventory;
-    }
-
 }

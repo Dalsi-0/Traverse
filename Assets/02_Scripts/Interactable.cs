@@ -36,7 +36,6 @@ public class Interactable : MonoBehaviour
 
     public void ToggleActiveInfoUI(bool isActive)
     {
-        Debug.Log("sfesef");
         infoUI.SetActive(isActive);
     }
 

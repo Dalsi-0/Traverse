@@ -15,8 +15,8 @@ MonoBehaviour:
   itemName: "\uD65C\uB825\uD3EC\uC158"
   itemType: 2
   itemRarity: 1
-  icon: {fileID: 21300000, guid: 90b5e93b446d5be458b68abf1dbc9b2e, type: 3}
-  value: 20
+  icon: {fileID: 21300000, guid: 905124e752be8c14a84e1c2eb4537516, type: 3}
+  value: 5
   stackCount: 5
   description: "10\uCD08\uB3D9\uC548 \uC774\uB3D9\uC18D\uB3C4\uAC00 \uC0C1\uC2B9\uD55C\uB2E4."
   consumableType: 1

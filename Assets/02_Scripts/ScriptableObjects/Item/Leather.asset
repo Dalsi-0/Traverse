@@ -17,6 +17,6 @@ MonoBehaviour:
   itemRarity: 0
   icon: {fileID: 21300000, guid: 54f6b010e52ff62429e5caf1e29b5089, type: 3}
   value: 0
-  stackCount: 10
+  stackCount: 3
   description: "\uB3D9\uBB3C\uC758 \uC9C8\uAE34 \uAC00\uC8FD\uC774\uB2E4."
   materialType: 0

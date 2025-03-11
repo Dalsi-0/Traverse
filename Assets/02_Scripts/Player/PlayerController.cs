@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
 
     private float acceleration = 10f;
     private float deceleration = 10f;
-    private float maxSpeed = 10f;
     private float jumpForce = 7f;
     private float staminaDrainRate = 10f;
     private float staminaDrainRateClimb = 2f;
@@ -396,11 +395,11 @@ public class PlayerController : MonoBehaviour
 
             if (isGrounded)
             {
-                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * maxSpeed, acceleration * Time.deltaTime);
+                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * player.maxSpeed, acceleration * Time.deltaTime);
             }
             else
             {
-                currentVelocity = Vector3.Lerp(currentVelocity,( moveDirection * maxSpeed) * 0.65f, acceleration * Time.deltaTime);
+                currentVelocity = Vector3.Lerp(currentVelocity,( moveDirection * player.maxSpeed) * 0.65f, acceleration * Time.deltaTime);
             }
         }
         else
@@ -409,7 +408,7 @@ public class PlayerController : MonoBehaviour
         }
         PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
 
-        animator.SetFloat(animIDSpeed, currentVelocity.magnitude / maxSpeed);
+        animator.SetFloat(animIDSpeed, currentVelocity.magnitude / player.maxSpeed);
     }
 
     
@@ -426,7 +425,7 @@ public class PlayerController : MonoBehaviour
             if (moveDirection.magnitude > 0)
             {
                 float speedModifier = isCharging ? 0.2f : 0.3f;
-                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (maxSpeed * speedModifier), acceleration * Time.deltaTime);
+                currentVelocity = Vector3.Lerp(currentVelocity, moveDirection * (player.maxSpeed * speedModifier), acceleration * Time.deltaTime);
             }
             else
             {
@@ -435,7 +434,7 @@ public class PlayerController : MonoBehaviour
         }
 
         PlayerRigidbody.velocity = new Vector3(currentVelocity.x, PlayerRigidbody.velocity.y, currentVelocity.z);
-        float speedRatio = currentVelocity.magnitude / (maxSpeed * (isCharging ? 0.3f : 0.5f));
+        float speedRatio = currentVelocity.magnitude / (player.maxSpeed * (isCharging ? 0.3f : 0.5f));
         animator.SetFloat(animIDSpeed, Mathf.Clamp(speedRatio, 0f, 1f));
         animator.SetFloat(animIDMoveX, smoothDir.x);
         animator.SetFloat(animIDMoveZ, smoothDir.y);

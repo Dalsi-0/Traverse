@@ -58,8 +58,27 @@ public class UIManager : MonoBehaviour
         GetUIReferences().EquipmentUIObject.SetActive(false);
     }
 
+    public void SetInventoryDetailUI(ItemSO itemSO, int amount)
+    {
+        if (itemSO.ItemType == ITEM_TYPE.Consumable)
+        {
+            GetUIReferences().InventorySelectItemUseButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            GetUIReferences().InventorySelectItemUseButton.gameObject.SetActive(false);
+        }
+
+        GetUIReferences().InventorySelectItemImage.gameObject.SetActive(true);
+        GetUIReferences().InventorySelectItemImage.sprite = itemSO.Icon;
+        GetUIReferences().InventorySelectItemName.text = itemSO.ItemName;
+        GetUIReferences().InventorySelectItemDes.text = itemSO.Description;
+        GetUIReferences().InventorySelectItemStack.text = amount.ToString();
+    }
     public void ResetInventoryDetailUI()
     {
+        UIManager.Instance.GetUIReferences().InventorySelectItemUseButton.gameObject.SetActive(false);
+        GetUIReferences().InventorySelectItemImage.gameObject.SetActive(false);
         GetUIReferences().InventorySelectItemImage.sprite = GetUIReferences().InventorySelectItemNULLImage;
         GetUIReferences().InventorySelectItemName.text = "";
         GetUIReferences().InventorySelectItemDes.text = "";

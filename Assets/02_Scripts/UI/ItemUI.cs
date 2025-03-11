@@ -7,13 +7,15 @@ public class ItemUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemStackText;
     [SerializeField] private Image itemIcon;
     private ItemSO itemSO;
+    private int myAmount;
 
     public void SetItemData(ItemSO item, int amount)
     {
         itemSO = item;
-        if (amount > 1)
+        myAmount = amount;
+        if (myAmount > 1)
         {
-            itemStackText.text = amount.ToString();
+            itemStackText.text = myAmount.ToString();
         }
         else
         {
@@ -21,5 +23,12 @@ public class ItemUI : MonoBehaviour
         }
         itemIcon.sprite = itemSO.Icon;
         itemIcon.SetNativeSize();
+    }
+
+    public void SelectThisItem()
+    {
+        UIManager.Instance.GetUIReferences().InventorySelectItemUseButton.onClick.RemoveAllListeners();
+        UIManager.Instance.GetUIReferences().InventorySelectItemUseButton.onClick.AddListener(() => ((ConsumableItemSO)itemSO).Use());
+        UIManager.Instance.SetInventoryDetailUI(itemSO, myAmount);
     }
 }

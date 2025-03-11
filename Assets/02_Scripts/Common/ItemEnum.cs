@@ -24,7 +24,7 @@ public enum EQUIPMENT_TYPE
 public enum CONSUMABLE_TYPE
 {
     Meat,
-    ATKPotion
+    SpeedPotion
 }
 
 public enum ITEM_RARITY

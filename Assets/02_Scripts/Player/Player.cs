@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using static IEntityActions;
 
@@ -9,6 +9,7 @@ public class Player : MonoBehaviour, IDamageable
     public float attackPower = 10f;
     public float maxHp = 100f;
     public float maxStamina = 100f;
+    public float maxSpeed = 10f;
 
     public float staminaRegenRate = 5f;
     public float staminaRegenDelay = 2f;
@@ -21,12 +22,14 @@ public class Player : MonoBehaviour, IDamageable
         {
             Die();
         }
+        PlayerManager.Instance.NotifyHpDamage();
     }
 
     public void Heal(float amount)
     {
         hp += amount;
         if (hp > maxHp) hp = maxHp;
+        PlayerManager.Instance.NotifyHpHeal();
     }
 
     public bool ConsumeStamina(float amount)
@@ -70,11 +73,11 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Attack()
     {
-        Debug.Log("Attacking with " + attackPower + " damage.");
+        Debug.Log(attackPower + " damage.");
     }
 
     private void Die()
     {
-        Debug.Log("Player has died.");
+        Debug.Log("Player die.");
     }
 }
