@@ -11874,7 +11874,7 @@ MonoBehaviour:
   attackPower: 10
   maxHp: 100
   maxStamina: 100
-  staminaRegenRate: 5
+  staminaRegenRate: 15
   staminaRegenDelay: 2
 --- !u!114 &1046401402
 MonoBehaviour:
